@@ -10,11 +10,28 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.12",
     "@nextui-org/react": "^2.6.8",
     "@nextui-org/system": "^2.4.4",
     "@nextui-org/theme": "^2.4.3",
     "@react-types/shared": "3.26.0",
+    "@tiptap/extension-font-family": "^2.14.0",
+    "@tiptap/extension-heading": "^2.14.0",
+    "@tiptap/extension-image": "^2.14.0",
+    "@tiptap/extension-link": "^2.14.0",
+    "@tiptap/extension-subscript": "^2.14.0",
+    "@tiptap/extension-superscript": "^2.14.0",
+    "@tiptap/extension-task-item": "^2.14.0",
+    "@tiptap/extension-task-list": "^2.14.0",
+    "@tiptap/extension-text-align": "^2.14.0",
+    "@tiptap/extension-text-style": "^2.14.0",
+    "@tiptap/extension-typography": "^2.14.0",
+    "@tiptap/extension-underline": "^2.14.0",
+    "@tiptap/pm": "^2.14.0",
+    "@tiptap/react": "^2.14.0",
+    "@tiptap/starter-kit": "^2.14.0",
     "axios": "^1.7.9",
+    "classnames": "^2.5.1",
     "clsx": "2.1.1",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.468.0",
@@ -26,7 +43,9 @@
     "react-router-dom": "6.23.0",
     "styled-components": "^6.1.14",
     "tailwind-variants": "0.1.20",
-    "tailwindcss": "3.4.16"
+    "tailwindcss": "3.4.16",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@types/node": "20.5.7",
@@ -49,6 +68,8 @@
     "postcss": "8.4.38",
     "prettier": "^3.3.3",
     "react-beautiful-dnd": "^13.1.1",
+    "sass": "^1.89.1",
+    "sass-embedded": "^1.89.1",
     "typescript": "5.6.3",
     "vite": "^5.2.0",
     "vite-tsconfig-paths": "^4.3.2"
