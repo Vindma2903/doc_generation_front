@@ -12,6 +12,9 @@ import Image from "@tiptap/extension-image"
 import TextStyle from "@tiptap/extension-text-style"
 import FontFamily from "@tiptap/extension-font-family"
 import Link from "@tiptap/extension-link"
+import { FontSize } from "@/shared/extensions/FontSize"
+
+
 
 import { TextAlignButton } from "@/shared/ui/common/document/text-align-button"
 import { UndoRedoButton } from "@/shared/ui/common/document/undo-redo-button"
@@ -43,9 +46,11 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
       TextStyle,
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
+      FontSize,
     ],
     content,
     onUpdate({ editor }) {
+      console.log("HTML content:", editor.getHTML()) // <--- вот это
       onChange(editor.getHTML())
     },
   })
@@ -55,7 +60,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
       editor.commands.setContent(content)
     }
   }, [content, editor])
-
 
   if (!editor) return null
 
@@ -72,6 +76,10 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
     </button>
   )
 
+  const fontSizes = ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "72px"]
+  const currentFontSize = editor.getAttributes("fontSize")?.fontSize || "16px"
+
+
   return (
     <EditorContext.Provider value={{ editor }}>
       <div className="editor-container">
@@ -81,25 +89,33 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
 
           <HeadingDropdownMenu editor={editor} levels={[1, 2, 3, 4, 5, 6]} />
 
+          {/* Font Family Selector */}
           <select
             onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
-            defaultValue="Arial"
+            value={editor.getAttributes("textStyle")?.fontFamily || "Roboto"}
           >
-            <option value="Arial">Arial</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Courier New">Courier New</option>
-            <option value="Times New Roman">Times New Roman</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Times New Roman Custom">Times New Roman</option>
           </select>
 
+          {/* Font Size Selector */}
           <select
-            onChange={(e) => editor.chain().focus().setMark("textStyle", { fontSize: e.target.value }).run()}
-            defaultValue="16px"
+            value={currentFontSize}
+            onChange={(e) => {
+              const size = e.target.value
+              if (size === "default") {
+                editor.chain().focus().unsetFontSize().run()
+              } else {
+                editor.chain().focus().setFontSize(size).run()
+              }
+            }}
           >
-            <option value="12px">12</option>
-            <option value="14px">14</option>
-            <option value="16px">16</option>
-            <option value="18px">18</option>
-            <option value="24px">24</option>
+            <option value="default">По умолчанию</option>
+            {fontSizes.map((size) => (
+              <option key={size} value={size}>
+                {size.replace("px", "")}
+              </option>
+            ))}
           </select>
 
           {formatButton("B", () => editor.chain().focus().toggleBold().run(), "Bold")}
@@ -144,7 +160,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
           {formatButton("•", () => editor.chain().focus().toggleBulletList().run(), "Bullet List")}
           {formatButton("1.", () => editor.chain().focus().toggleOrderedList().run(), "Numbered List")}
           {formatButton("☑", () => editor.chain().focus().toggleTaskList().run(), "Task List")}
-
           {formatButton("S", () => editor.chain().focus().toggleStrike().run(), "Strikethrough")}
           {formatButton("</>", () => editor.chain().focus().toggleCode().run(), "Code")}
           {formatButton("x²", () => editor.chain().focus().toggleSuperscript().run(), "Superscript")}

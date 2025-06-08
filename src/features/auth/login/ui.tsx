@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Form, Link } from "@nextui-org/react";
 import { Input } from "@/shared/ui/common/input";
 import { InputPassword } from "@/shared/ui/common/input-password";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext";
+
 
 interface LoginFormValues {
   email: string;
