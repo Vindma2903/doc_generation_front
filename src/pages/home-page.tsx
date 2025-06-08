@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Card } from "@nextui-org/react"; // Импортируем компоненты NextUI
 import "@/shared/styles/home.css"; // Подключаем стили
 import "@/shared/styles/globals.css"; // Подключаем стили
 import { MainSidebar } from "@/shared/ui/common/main-sidebar"; // Импортируем боковое меню

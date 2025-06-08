@@ -10,31 +10,20 @@ const EditTemplatePage: React.FC = () => {
 
   const [template, setTemplate] = useState<{ name: string; content: string } | null>(null)
   const [loading, setLoading] = useState(true)
-  const [updatedContent, setUpdatedContent] = useState<string>("")
+  const [editedName, setEditedName] = useState("")
+  const [updatedContent, setUpdatedContent] = useState("")
 
-  const initialContent = `
-    <ul>
-      <li>Unordered list item</li>
-      <li>Another unordered item</li>
-    </ul>
-
-    <ol>
-      <li>Ordered list item</li>
-      <li>Another ordered item</li>
-    </ol>
-
-    <ul data-type="taskList">
-      <li data-type="taskItem" data-checked="true">Completed task</li>
-      <li data-type="taskItem" data-checked="false">Pending task</li>
-    </ul>
-  `
-
+  // Загрузка шаблона при монтировании
   useEffect(() => {
     const fetchTemplate = async () => {
+      if (!id) return
+
       try {
         const response = await axios.get(`http://localhost:8080/templates/${id}`)
-        setTemplate(response.data)
-        setUpdatedContent(response.data.content || "")
+        const { name, content } = response.data
+        setTemplate({ name, content })
+        setEditedName(name)
+        setUpdatedContent(content || "")
       } catch (error) {
         console.error("Ошибка загрузки шаблона:", error)
       } finally {
@@ -42,19 +31,37 @@ const EditTemplatePage: React.FC = () => {
       }
     }
 
-    if (id) fetchTemplate()
+    fetchTemplate()
   }, [id])
 
   const handleSave = async () => {
+    if (!template) return
+
     try {
       await axios.put(`http://localhost:8080/templates/${id}`, {
         ...template,
         content: updatedContent,
       })
-      alert("Сохранено!")
+      alert("Содержимое сохранено!")
     } catch (error) {
       console.error("Ошибка сохранения:", error)
-      alert("Ошибка сохранения")
+      alert("Ошибка при сохранении содержимого")
+    }
+  }
+
+  const handleNameBlur = async () => {
+    if (!id || !editedName.trim()) return
+
+    try {
+      await axios.post("http://localhost:8080/templates/rename", {
+        id: Number(id),
+        name: editedName.trim(),
+      })
+
+      setTemplate((prev) => (prev ? { ...prev, name: editedName.trim() } : null))
+    } catch (error) {
+      console.error("Ошибка при переименовании:", error)
+      alert("Не удалось переименовать шаблон")
     }
   }
 
@@ -64,20 +71,31 @@ const EditTemplatePage: React.FC = () => {
   return (
     <div className="edit-template-wrapper">
       <div className="edit-template-header">
-        <button className="edit-template-back-button" onClick={() => navigate("/templates")}>
+        <button
+          className="edit-template-back-button"
+          onClick={() => navigate("/templates")}
+        >
           <img src="/return-icon.svg" alt="Назад" className="back-icon" />
         </button>
 
-        <h2 className="edit-template-title">{template.name}</h2>
+        <input
+          type="text"
+          value={editedName}
+          onChange={(e) => setEditedName(e.target.value)}
+          onBlur={handleNameBlur}
+          className="edit-template-rename-input"
+        />
       </div>
 
+      {/* Используем key, чтобы SimpleEditor не перерендеривался без причины */}
       <SimpleEditor
-        content={updatedContent || initialContent}
+        key={template.name + template.content} // гарантирует перерендер только при смене шаблона
+        content={updatedContent}
         onChange={setUpdatedContent}
       />
 
       <button className="edit-template-save-button" onClick={handleSave}>
-        Сохранить
+        Сохранить содержимое
       </button>
     </div>
   )

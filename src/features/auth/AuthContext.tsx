@@ -50,39 +50,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // ✅ Функция проверки авторизации
   const checkAuth = async () => {
     try {
+      const token = localStorage.getItem("access_token");
       console.log("🚀 Проверяем авторизацию (GET /auth/check)...");
-      console.log("🔎 Токен:", localStorage.getItem("access_token"));
+      console.log("🔎 Access токен:", token);
 
-      const response = await axios.get<{ status: string; user: User; access_token?: string }>(
-        "http://127.0.0.1:8000/auth/check",
+      const response = await axios.get<{ status: string; user: User }>(
+        "http://127.0.0.1:8080/auth/check",
         {
-          withCredentials: true,
+          withCredentials: true, // важно для работы с HttpOnly cookie
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token") || ""}`,
+            Authorization: `Bearer ${token || ""}`,
           },
         }
       );
 
       if (response.data.status === "authorized") {
-        if (response.data.access_token) {
-          localStorage.setItem("access_token", response.data.access_token);
-        }
-
         setUser({
           ...response.data.user,
           isAdmin: response.data.user.role === "admin",
         });
-      } else {
-        setUser(null);
+        return;
       }
+
+      throw new Error("Unauthorized");
     } catch (error: any) {
-      console.error("❌ Ошибка авторизации:", error);
-      setUser(null);
-      localStorage.removeItem("access_token");
+      console.warn("🔁 Access токен истёк. Пытаемся обновить через refresh...");
+
+      try {
+        // ⚠️ Пытаемся обновить access токен
+        const refreshResponse = await axios.post<{ access_token: string }>(
+          "http://127.0.0.1:8080/refresh",
+          {},
+          { withCredentials: true }
+        );
+
+        const newToken = refreshResponse.data.access_token;
+        localStorage.setItem("access_token", newToken);
+
+        // Повторяем checkAuth после обновления токена
+        return await checkAuth();
+      } catch (refreshError) {
+        console.error("❌ Ошибка при обновлении токена:", refreshError);
+        setUser(null);
+        localStorage.removeItem("access_token");
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     checkAuth();
