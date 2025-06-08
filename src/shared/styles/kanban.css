@@ -1,0 +1,512 @@
+
+.container {
+  width: 300px;
+  margin: 12px;
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.container.is-dragging-over {
+  background-color: #e0f7fa;
+}
+
+.add-button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  background-color: #615ef0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #4b4de0;
+}
+
+.task-list {
+  flex-grow: 1; /* Занимает оставшееся пространство в колонке */
+  padding: 8px;
+  height: 80vh; /* Высота 80% экрана */
+  overflow-y: auto; /* Включаем вертикальную прокрутку */
+  min-height: unset; /* Убираем min-height, чтобы не конфликтовало */
+  background-color: #fff; /* Белый фон */
+}
+
+
+.form-container {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.submit-button {
+  padding: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button {
+  padding: 8px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancel-button:hover {
+  background-color: #e53935;
+}
+
+/* Основной контейнер (колонки) */
+.board-container {
+  display: flex;
+  flex: 1; /* Заставляем контейнер заполнять все доступное пространство */
+  background: #ffffff;
+  box-sizing: border-box;
+  gap: 16px;
+  overflow: hidden; /* Чтобы не было горизонтального скролла */
+  padding-bottom: 80px; /* Оставляем место для зоны удаления */
+}
+
+.column-container {
+  display: flex;
+  padding: 16px;
+  background-color: #FAFAFA; /* Фон цвета #FAFAFA */
+  border-radius: 8px; /* Небольшое округление углов */
+
+}
+
+.board-container,
+.column-container {
+  overflow: visible;
+}
+
+.column-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left; /* Выравнивание по левому краю */
+  margin: 32px;
+  padding-right: 8px; /* Отступ справа для визуального разделения */
+}
+
+
+.column-header {
+   display: flex;
+  align-items: center; /* Выравниваем по вертикали */
+  justify-content: flex-start; /* Размещаем элементы в одну строку, начиная слева */
+}
+
+
+.column-total {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin: 24px 0;
+  text-align: center; /* Сумма по центру */
+}
+
+.deal-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  color: #333;
+  margin: 0; /* Убираем автоцентрирование */
+}
+
+
+.crm-container {
+  width: 300px;
+  margin: 12px;
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.crm-container.crm-is-dragging-over {
+  background-color: #e0f7fa;
+}
+
+.crm-add-button {
+  background-color: white; /* Белый фон */
+  justify-content: center;
+  align-items: center;
+  width: 320px; /* Ширина кнопки */
+  margin: 16px 30px 0; /* Отступ сверху 16px, по бокам 12px */
+  padding: 12px; /* Внутренние отступы */
+  border: 1px solid #dcdcdc; /* Светло-серая граница */
+  border-radius: 8px; /* Закругленные углы */
+  color: #6f52ed; /* Основной цвет текста */
+  font-weight: bold;
+  font-size: 14px; /* Размер шрифта */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Расстояние между иконкой и текстом */
+}
+
+.crm-add-icon {
+  width: 24px; /* Ширина иконки */
+  height: 24px; /* Высота иконки */
+  margin-right: 8px; /* Отступ между иконкой и текстом */
+}
+
+.crm-add-button:hover {
+  background-color: #615ef0; /* При наведении фон становится фиолетовым */
+  color: #fff; /* Текст становится белым */
+  border-color: #615ef0; /* Граница сливается с фоном */
+  }
+
+.crm-add-button:hover .crm-add-icon {
+  color: #ffffff; /* Иконка становится белой */
+}
+
+
+.crm-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Расстояние между элементами формы */
+  padding-top: 9px;
+}
+
+.crm-input {
+    padding: 12px;
+  border: 1px solid #dcdcdc; /* Светло-серая граница */
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.crm-form-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.crm-submit-button,
+.crm-cancel-button {
+  padding: 8px 16px; /* Одинаковый внутренний отступ для обеих кнопок */
+  min-width: 100px; /* Фиксированная минимальная ширина для кнопок */
+  text-align: center; /* Выравнивание текста по центру */
+}
+
+.crm-submit-button:hover {
+  background-color: #918EFF;
+}
+
+.crm-cancel-button {
+  padding: 8px;
+  background-color: #FFFFFF; /* Белый фон */
+  color: #2E2E2E; /* Темный текст */
+  border: 1px solid #E4E4E7; /* Добавлена обводка */
+  border-radius: 4px; /* Скругленные углы */
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.crm-cancel-button:hover {
+  background-color: #F9FAFB; /* Легкий эффект при наведении */
+  border-color: #D4D4D8; /* Обводка становится темнее при наведении */
+}
+
+.crm-submit-button {
+  padding: 8px;
+  background-color: #615EF0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+
+/* Стили для зоны перетаскивания */
+.crm-task-list {
+  background-color: #FAFAFA; /* Светлый фон */
+  width: 380px; /* Фиксированная ширина */
+  padding: 12px; /* Внутренние отступы */
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Расстояние между задачами и другими элементами */
+  min-height: calc(40vh);
+  height: 40%; /* Растягиваем зону на всю высоту */
+  position: relative; /* Для позиционирования дочерних элементов */
+  border: 2px dashed transparent; /* Добавляем границу, чтобы улучшить восприятие */
+  transition: border-color 0.3s ease;
+}
+
+
+/* Стиль для карточки при нахождении в зоне сброса */
+.crm-task-list.dragging-over {
+  border-color: #4caf50; /* Зеленая рамка */
+  background-color: #e8f5e9; /* Легкий зеленый фон */
+}
+
+.crm-task-list:empty::before {
+  content: ''; /* Добавляем пустое место в пустой колонке */
+  display: block;
+  height: 50px; /* Высота для уменьшения верхней области сброса */
+}
+
+/* Теперь зона сброса растягивается на всю высоту */
+.crm-task-list.dragging-over:before {
+  content: ''; /* Добавляем дополнительный элемент перед задачами */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(233, 241, 215, 0.5); /* Легкий зеленый фон */
+  z-index: 10;
+}
+
+.task-container {
+   background-color: white; /* Белый фон */
+  width: 320px; /* Фиксированная ширина */
+  height: 185px; /* Фиксированная высота */
+  margin: 10px auto; /* Внешние отступы сверху и снизу */
+  padding: 16px; /* Внутренние отступы */
+  border-radius: 8px; /* Закругленные углы */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  display: flex;
+  flex-direction: column;
+  font-size: 14px; /* Размер шрифта */
+}
+
+
+.task-user-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Круглая форма */
+}
+
+.task-time {
+  font-size: 14px;
+  color: #a1a1a1;
+  margin-left: auto; /* Прижать время вправо */
+  align-self: flex-end; /* Выровнять время по нижнему краю */
+}
+
+.task-dragging {
+  background-color: #ffdddd; /* Красный цвет при перетаскивании */
+  z-index: 3000; /* Увеличьте z-index для карточки */
+  position: absolute; /* Необходимо для корректного отслеживания */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Тень для выделения */
+  border: 1px solid #ff0000; /* Рамка для визуального эффекта */
+}
+
+
+.task-container.task-dragging {
+  background-color: #c8e6c9; /* Цвет при перетаскивании */
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+
+.task-info {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #797C80;
+}
+
+
+
+
+.crm-is-dragging-over {
+  background-color: #e0e0e0;
+}
+
+.task-creator {
+  margin-left: 4px; /* Уменьшен отступ между иконкой и именем */
+  font-size: 12px; /* Немного уменьшен размер шрифта */
+  color: #555;
+  white-space: nowrap; /* Предотвращает перенос имени */
+}
+
+.task-footer {
+  display: flex;
+  align-items: center; /* Выравниваем элементы по вертикали */
+  justify-content: space-between; /* Распределяем элементы по ширине */
+  margin-top: 18px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center; /* Выравниваем изображение и текст по вертикали */
+  gap: 8px; /* Расстояние между изображением и текстом */
+}
+
+/* Обновленная зона удаления */
+.delete-area {
+  width: 40%;
+  height: 50px;
+  background-color: #f3f4f6;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ccc;
+  position: fixed;
+  bottom: 5px;
+  left: 60%;
+  transform: translateX(-50%);
+  border-radius: 8px;
+  visibility: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  z-index: 3000; /* Убедитесь, что зона имеет высокий z-index */
+}
+
+.delete-area.active {
+  visibility: visible;
+}
+
+.delete-area.highlight {
+  background-color: #ffcccc; /* Светло-красный фон */
+  border-color: #ff0000; /* Красная рамка */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.delete-area:hover {
+  border-color: #ff0000; /* Пунктирная линия меняет цвет */
+}
+
+.delete-area:hover .delete-text {
+  color: #ff0000; /* Цвет текста меняется на красный */
+  border-color: #ff4d4d;
+}
+
+.delete-text {
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.task-dragging-over-delete-area {
+  background-color: #ffdddd; /* Красноватый фон */
+  border: 1px solid #ff0000; /* Красная рамка */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+
+.save-button {
+  background: #2fc6f7;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Модальное окно удаления */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.delete-modal-container {
+  background: white;
+  border-radius: 8px;
+  width: 440px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.delete-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.delete-modal-title {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2B2D33;
+}
+
+.delete-modal-text {
+  margin: 0 0 32px 0;
+  font-size: 15px;
+  line-height: 20px;
+  color: #000;
+  max-width: 360px;
+}
+
+.delete-modal-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.delete-modal-cancel {
+  padding: 12px 24px;
+  background: #F5F5F7;
+  border: 1px solid #E1E3E6;
+  border-radius: 8px;
+  color: #2B2D33;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 15px;
+}
+
+.delete-modal-cancel:hover {
+  background: #E8E8E8;
+}
+
+.delete-modal-confirm {
+  padding: 12px 24px;
+  background: #615EF0;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 15px;
+}
+
+.delete-modal-confirm:hover {
+  background: #4946D1;
+}

@@ -1,0 +1,181 @@
+
+
+.content-description {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #2e2e2e;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  word-wrap: break-word; /* Перенос длинных слов */
+  overflow-wrap: break-word; /* Альтернативное свойство для переноса */
+  white-space: normal; /* Обеспечивает нормальный перенос строк */
+  max-width: 650px; /* Ограничивает ширину текста */
+}
+
+/* Карточка */
+
+.content-card {
+  width: 100%;
+  max-width: 1243px;
+  height: 14.25rem; /* Высота карточки (228px) */
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  margin: 2.5rem 0; /* Отступы сверху и снизу (40px) */
+  box-shadow: none; /* Убираем тень */
+}
+
+/* Контент внутри карточки */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Ряд с цифрой и текстом */
+.card-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Блок с цифрой */
+.card-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8125rem; /* 45px */
+  height: 2.8125rem; /* 45px */
+  border: 2px solid #E9ECEF;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #615ef0;
+  background-color: #FFFFFF;
+  margin-right: 2.5rem; /* 40px */
+}
+
+/* Текст внутри карточки */
+.card-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #2e2e2e;
+  flex-grow: 1;
+}
+
+/* Кнопка в карточке */
+.card-button {
+  width: 10rem; /* 160px */
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #615ef0;
+  color: #ffffff;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+  margin-top: 1rem;
+  margin-left: 5.5rem; /* Сдвигаем кнопку вправо на 112px */
+}
+
+.card-button:hover {
+  background-color: #4a49d4;
+}
+
+
+/* Маленькая карточка */
+.small-card {
+  height: 6.25rem; /* Высота 100px */
+  padding: 1.5rem; /* Внутренние отступы */
+  display: flex; /* Flexbox для выравнивания содержимого */
+  align-items: left; /* Центрируем содержимое по вертикали */
+  justify-content: left; /* Центрируем содержимое по горизонтали */
+}
+
+/* Контент внутри карточки */
+.card-content {
+  display: flex;
+  flex-direction: column; /* По умолчанию вертикальное расположение */
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Ряд внутри маленькой карточки */
+.card-row {
+  display: flex; /* Горизонтальное расположение */
+  align-items: center; /* Центрирование содержимого по вертикали */
+  width: 100%; /* Занимает всю ширину карточки */
+}
+
+/* Контейнер для карточек документации */
+
+/* Контейнер для карточек документации */
+.small-small-cards-container {
+  display: flex;
+  flex-wrap: wrap; /* Позволяет карточкам переноситься на следующую строку */
+  gap: 1.25rem; /* Отступы между карточками */
+  margin-top: 2.75rem; /* Отступ сверху */
+  max-width: 100%; /* Контейнер не выходит за пределы экрана */
+  padding: 0; /* Внутренние отступы для предотвращения выхода за границы */
+  box-sizing: border-box; /* Учитываем отступы и границы */
+}
+
+/* Карточка документации */
+.small-small-card {
+  flex: 1 1 calc(33.333% - 1.25rem); /* Карточки занимают треть ширины контейнера с учётом отступа */
+  max-width: 400px; /* Максимальная ширина карточки */
+  height: 13.125rem; /* Высота 210px */
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #E9ECEF;
+  border-radius: 8px;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Пространство между элементами */
+  align-items: flex-start; /* Выравнивание текста по левому краю */
+}
+
+/* Заголовок карточки */
+.small-small-card-title {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 600;
+  color: #2e2e2e;
+}
+
+/* Текст карточки */
+.small-small-card-text {
+  font-size: 1rem; /* 16px */
+  font-weight: 400;
+  color: #2e2e2e;
+  line-height: 1.6;
+}
+
+/* Кнопка карточки */
+.small-small-card-button {
+  width: 7rem; /* Ширина кнопки (112px в rem) */
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #615ef0;
+  color: #ffffff;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+  align-self: flex-start; /* Кнопка остаётся слева */
+}
+
+.small-small-card-button:hover {
+  background-color: #4a49d4;
+}
+
+.py-4
+{
+padding-top:1.5rem;
+}
+
+.font-semibold
+{
+font-weight:500;
+font-size: 16px;
+}

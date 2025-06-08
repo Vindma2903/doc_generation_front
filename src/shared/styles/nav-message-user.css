@@ -1,0 +1,303 @@
+/* Стили только для NavMessageUser */
+.nav-msg-user-sidebar {
+  width: 22.5rem; /* Ширина бокового меню (360px) */
+  background-color: #f5f5f5;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 80px; /* Учитываем ширину доп. навигации */
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 10; /* Устанавливаем индекс выше блока сообщений */
+}
+
+.nav-msg-user-sidebar-container {
+   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nav-msg-user-messages-header {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.625rem;
+}
+
+.nav-msg-user-incoming-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9375rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.nav-msg-user-message-block {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem; /* 10px */
+  padding: 0.625rem; /* 10px */
+  border-radius: 0.5rem; /* 8px */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-msg-user-message-block:hover {
+  background-color: #f0f0f0;
+}
+
+.nav-msg-user-message-block.nav-msg-user-active {
+  background-color: #e0f7fa;
+}
+
+.nav-msg-user-message-block.nav-msg-user-active {
+  background-color: #615ef0; /* Синий фон */
+  color: white; /* Белый текст */
+}
+
+.nav-msg-user-message-block.nav-msg-user-active .nav-msg-user-user-name,
+.nav-msg-user-message-block.nav-msg-user-active .nav-msg-user-message-text {
+  color: white; /* Белый текст для всех элементов */
+}
+
+
+.nav-msg-user-message-content {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 0.75rem 1rem; /* Добавлен увеличенный отступ внутри блока */
+}
+
+.nav-msg-user-user-name {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  margin-bottom: 0.25rem; /* Отступ под именем пользователя */
+}
+
+.nav-msg-user-user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; /* 40px */
+  height: 2.5rem; /* 40px */
+  border-radius: 50%;
+  background-color: #ddd; /* Фон круга */
+  color: #333; /* Цвет текста */
+  font-size: 1.25rem; /* 20px */
+  font-weight: bold;
+}
+
+.nav-msg-user-message-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Общий стиль для текста сообщений */
+.nav-msg-user-message-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Текст для отправленных сообщений */
+.nav-msg-user-sent .nav-msg-user-message-text {
+  color: #2E2E2E; /* Белый текст */
+}
+
+/* Текст для полученных сообщений */
+.nav-msg-user-received .nav-msg-user-message-text {
+  color: #FFFFFF; /* Тёмный текст */
+}
+
+.nav-message-user-home-container {
+  display: flex;
+  position: relative;
+}
+
+
+.nav-message-user-chat-input {
+    flex: 1;
+  height: 66px; /* Фиксированная высота */
+  font-size: 1rem;
+  resize: none; /* Убирает возможность изменения размера */
+  padding: 0.5rem; /* Внутренний отступ для текста */
+  border: none; /* Убирает обводку текстового поля */
+  outline: none; /* Убирает обводку при фокусе */
+}
+
+.nav-message-user-chat-send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 66px; /* Квадратная кнопка */
+  height: 66px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+
+}
+
+.nav-message-user-send-icon {
+  width: 24px;
+  height: 24px;
+  fill: white; /* Иконка будет белой */
+}
+
+.nav-message-user-content {
+     display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  margin-left: 80px; /* Отступ от бокового меню */
+  padding: 1rem;
+  background-color: #fff;
+}
+
+
+.nav-msg-user-chat-message {
+  display: flex;
+  flex-direction: column; /* Располагаем текст и время по вертикали */
+  align-items: flex-start; /* Выравниваем текст сообщения по левому краю */
+  max-width: 100%; /* Сообщение не превышает 60% ширины контейнера */
+  background-color: #615EF0; /* Фон сообщения */
+  padding: 0.5rem 1rem; /* Внутренние отступы */
+  border-radius: 8px; /* Скруглённые углы */
+  word-wrap: break-word; /* Перенос длинных слов */
+  word-break: break-word; /* Дополнительный перенос слов */
+  position: relative; /* Для точного позиционирования времени */
+}
+
+.nav-msg-user-chat-message.nav-msg-user-sent {
+  align-self: flex-start; /* Выравниваем по левому краю */
+  background-color: #FFFFFF;
+  color: white;
+}
+
+.nav-message-user-chat-input-container {
+    display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #fff;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+  width: 80%; /* Растягиваем поле ввода по ширине блока */
+}
+
+
+
+.nav-msg-user-chat-message.nav-msg-user-received {
+  align-self: flex-start;
+  background-color: #615EF0;
+  color: #333;
+}
+
+.nav-msg-user-message-avatar {
+  flex-shrink: 0; /* Аватар не сжимается */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.nav-msg-user-message-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-msg-user-chat-messages {
+display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Поле ввода остаётся внизу */
+  position: fixed; /* Фиксированное положение */
+  bottom: 0; /* Прижат к низу */
+  left: calc(22.5rem + 200px); /* Учитываем ширину бокового меню и навигации */
+  width:80%; /* Учитываем оставшуюся ширину */
+  max-height: calc(100vh - 120px); /* Ограничиваем высоту */
+  overflow-y: auto; /* Прокрутка для сообщений */
+  border-radius: 8px;
+  padding: 1rem;
+  z-index: 5; /* Устанавливаем z-index выше навигации */
+}
+
+/* Сообщения */
+
+.nav-msg-user-messages-container {
+    flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+
+
+
+
+.nav-msg-user-message-content {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  max-width: 100%; /* Ограничение ширины сообщений */
+  color: #333; /* Цвет текста */
+  font-size: 1rem; /* Размер текста */
+  line-height: 1.5;
+  word-wrap: break-word; /* Перенос слов */
+}
+
+.nav-msg-user-message-avatar {
+   width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.nav-msg-user-avatar-icon {
+   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-msg-user-message-content {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
+
+.nav-msg-user-message-text {
+  margin: 0;
+  font-size: 1rem;
+  word-wrap: break-word;
+}
+
+.nav-msg-user-message-time {
+    font-size: 0.75rem; /* Размер текста для времени */
+  color: #ccc; /* Цвет текста времени */
+  bottom: 0px; /* Расстояние от нижней границы блока */
+  right: 0rem; /* Расстояние от правой границы блока */
+  text-align: right; /* Выравнивание по правому краю */
+}
+
+.nav-msg-user-chat-message-wrapper {
+ display: flex;
+  align-items: flex-start;
+  gap: 1rem; /* Расстояние между аватаром и сообщением */
+}
+
+.nav-msg-user-message-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-msg-user-sender-name {
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #2E2E2E;
+}

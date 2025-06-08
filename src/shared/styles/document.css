@@ -1,0 +1,8 @@
+.template-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.template-row:hover {
+    background-color: #eef3ff;
+}

@@ -1,0 +1,351 @@
+/* Основной контейнер */
+.home-container {
+  display: flex;
+  position: relative;
+}
+
+/* Основной контент */
+.content {
+  flex: 1;
+  padding-right: 100px;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 6rem;
+}
+
+/* Дополнительное боковое меню */
+.user-sidebar {
+  width: 250px;
+}
+
+.user-sidebar-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-menu-header {
+  margin-bottom: 20px;
+}
+
+.user-menu-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.user-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-menu-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2e2e2e;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 16px;
+}
+
+.user-menu-link:hover {
+  background: #B4B4B4;
+}
+
+.user-menu-link-active {
+  background: #615ef0;
+  color: #fff;
+}
+
+
+.user-sidebar {
+  width: 250px;
+}
+
+.user-sidebar-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-menu-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2e2e2e;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 16px;
+}
+
+.user-menu-link:hover {
+  background: #B4B4B4;
+  color: #fff;
+}
+
+.user-menu-link-active {
+  background: #615ef0;
+  color: #fff;
+}
+
+.user-menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  transition: filter 0.2s;
+}
+
+/* Белый цвет для активной иконки и при наведении */
+.user-menu-link:hover .user-menu-icon,
+.user-menu-link-active .user-menu-icon {
+  filter: brightness(0) invert(1);
+}
+
+
+.user-menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  transition: filter 0.2s;
+}
+
+/* Белый цвет для активной иконки */
+.user-menu-icon-active {
+  filter: brightness(0) invert(1);
+}
+
+
+
+/* Контент профиля */
+.profile-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.profile-content-container {
+     display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Центрируем элементы */
+  gap: 20px; /* Расстояние между фото и формой */
+}
+
+.profile-photo-container {
+  margin-bottom: 20px; /* Расстояние под фото */
+}
+
+.form-group-half {
+  flex: 1; /* Поля занимают по половине доступной ширины */
+}
+
+.profile-photo {
+   width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-form {
+  width: 100%;
+  max-width: 756px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Расстояние между элементами формы */
+}
+
+.form-row {
+  display: flex;
+  gap: 20px; /* Расстояние между полями */
+}
+
+
+
+/* Поля для номера телефона и почты */
+.form-group-wide {
+  width: 100%; /* Поля занимают всю ширину родительского контейнера */
+}
+
+.form-group {
+   display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+
+
+.save-button {
+  width: 144px; /* Фиксированная ширина */
+  height: 44px; /* Фиксированная высота */
+  background-color: #615ef0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-end; /* Расположение кнопки справа */
+  margin-top: 20px; /* Отступ сверху для разделения */
+}
+
+.save-button:hover {
+  background-color: #4a46c3;
+}
+
+/* Заблокированное поле */
+.locked-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.locked-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.locked-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: #a1a1aa;
+  background-color: #E4E4E7;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.locked-icon {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* Контент безопасности */
+.security-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.security-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Для полей старого, нового пароля и подтверждения пароля */
+.security-form .form-group-wide {
+  width: 100%; /* Убедитесь, что поля занимают всю доступную ширину */
+}
+
+.security-form input {
+  width: 100%; /* Поля ввода занимают всю ширину */
+}
+
+/* Кнопка сохранения */
+.save-button {
+  width: 144px; /* Фиксированная ширина */
+  height: 44px; /* Фиксированная высота */
+  background-color: #615ef0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-end; /* Расположение кнопки справа */
+  margin-top: 20px; /* Отступ сверху для разделения */
+}
+
+.save-button:hover {
+  background-color: #4a46c3;
+}
+
+/* Заблокированное поле */
+.locked-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.locked-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.locked-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: #a1a1aa;
+  background-color: #E4E4E7;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.locked-icon {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* Для полей старого, нового пароля и подтверждения пароля */
+.security-form .form-group-wide {
+  width: 100%; /* Убедитесь, что поля занимают всю доступную ширину */
+}
+
+.security-form input {
+  width: 100%; /* Поля ввода занимают всю ширину */
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  background-color: #E4E4E7;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  margin-bottom: 15px; /* Отступ снизу для правильного расстояния между полями */
+}
+
+.security-form .input-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px; /* Отступ между меткой и полем */
+}
+

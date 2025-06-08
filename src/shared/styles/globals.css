@@ -1,0 +1,444 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Установка Roboto как шрифта по умолчанию */
+* {
+  font-family: "Roboto", sans-serif; /* Исправлено на sans-serif (Roboto не относится к serif) */
+  font-style: normal;
+}
+
+h1 {
+  font-size: 2rem !important;
+  font-weight: 500 !important;
+}
+
+/* Контейнер для страницы */
+.home-container {
+  display: flex;
+  height: 100vh;
+  background-color: #ffffff; /* Прямое значение для фона */
+}
+
+.gap-4 {
+
+gap: 1.5rem!important;
+}
+
+/* Тень для страницы регистрации */
+
+.shadow-lg {
+    --tw-shadow: 0 4px 16px rgba(18, 28, 45, 0.2); /* Настроенная тень */
+    --tw-shadow-colored: 0 4px 16px var(--tw-shadow-color, rgba(18, 28, 45, 0.2));
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+/* В файле src/shared/styles/globals.css или соответствующем CSS-файле */
+.login-footer-center {
+  align-items: center !important; /* Принудительное центрирование */
+  justify-content: center;
+  text-align: center;
+}
+
+.override-align {
+  align-items: center !important; /* Переопределяем align-items */
+}
+
+.items-center {
+  align-items: center;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center; /* Центрирование по горизонтали */
+  align-items: center;    /* Центрирование по вертикали */
+  text-align: center;     /* Для текста */
+  height: 100%;           /* Убедитесь, что контейнер имеет достаточную высоту */
+}
+
+
+.checkbox-container {
+  display: flex;
+  align-items: flex-start; /* Выравнивание чекбокса по верхнему краю */
+  gap: 10px; /* Расстояние между чекбоксом и текстом */
+}
+
+
+.content {
+  flex-grow: 1;
+  padding: 3.5rem; /* Общие отступы для контента */
+  padding-left: 6rem;
+  background-color: #ffffff;
+}
+
+.content-title {
+   font-size: 1.5rem;
+  font-weight: 500;
+  color: #2e2e2e;
+  margin-bottom: 2.5rem;
+}
+
+/* Хлебные крошки */
+
+/* Стили для хлебных крошек */
+.breadcrumbs {
+  margin-bottom: 32px; /* Расстояние между хлебными крошками и заголовком */
+}
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: #545454;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-active {
+  font-weight: 500;
+  color: #2E2E2E;
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: #aaa;
+}
+
+
+/* Боковое меню */
+
+/* Стили бокового меню */
+.sidebar {
+  width: 22.5rem; /* 360px = 22.5rem */
+  background-color: #ffffff; /* Цвет фона меню */
+  border-right: 1px solid #f6f6f6; /* Цвет разделителя */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Контейнер внутри бокового меню */
+.sidebar-container {
+  width: 17rem; /* 267px = 16.6875rem */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 1rem 0;
+  height: calc(90vh - 25px); /* Задаем высоту относительно экрана */
+  max-height: 975px; /* Ограничиваем максимальную высоту */
+}
+
+
+/* Логотип */
+.menu-header {
+   padding: 1rem;
+  display: flex;
+  justify-content: space-between; /* Логотип слева, кнопка справа */
+  align-items: center;
+  border-bottom: 1px solid #f6f6f6;
+}
+
+.menu-logo {
+  max-width: 80%;
+  height: auto;
+}
+
+/* Кнопка "Скрыть меню" */
+.hide-menu-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+/* Ссылки меню */
+.menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center; /* Центрируем иконку и текст */
+  color: #2e2e2e; /* Цвет текста */
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem; /* Отступы внутри ссылки */
+  border-radius: 8px; /* Закругление */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  width: 100%;
+}
+
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  color: #2e2e2e; /* Цвет текста по умолчанию */
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Иконки внутри ссылок */
+.menu-icon {
+  width: 24px; /* Размер иконки */
+  height: 24px;
+  margin-right: 16px; /* Отступ между иконкой и текстом */
+}
+
+.menu-link.active img {
+  filter: invert(100%) brightness(2); /* Преобразование цвета иконки в белый */
+}
+
+.menu-link:hover img {
+  filter: invert(100%) brightness(2); /* Преобразование цвета иконки в белый при наведении */
+}
+
+.menu-link.active {
+  background-color: #615ef0;
+  color: #ffffff; /* Цвет текста активной ссылки */
+}
+
+.menu-link:hover {
+  background-color: #B4B4B4; /* Цвет при наведении */
+  color: #ffffff; /* Текст на активной ссылке */
+}
+
+/* Футер меню */
+.menu-footer {
+   padding: 1rem;
+  border-top: 1px solid #f6f6f6;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.user-profile {
+   display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto; /* Отодвигаем профиль вниз внутри .sidebar-container */
+  padding: 1rem 1rem 1rem 1rem; /* Выравниваем профиль по отступам пунктов меню */
+  border-top: 1px solid #f6f6f6; /* Разделитель сверху */
+}
+
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block; /* Убедитесь, что изображение отображается корректно */
+  object-fit: contain; /* Избегаем искажений изображения */
+}
+
+.burger-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.burger-icon {
+  width: 24px; /* Ширина иконки */
+  height: 24px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.burger-button:hover .burger-icon {
+  transform: scale(1.1); /* Увеличение при наведении */
+}
+
+.user-arrow {
+  width: 16px; /* Размер иконки */
+  height: 16px;
+  margin-left: 1rem; /* Отступ от текста */
+  cursor: pointer; /* Указатель при наведении */
+  transition: transform 0.2s ease-in-out; /* Анимация при наведении */
+
+}
+
+.user-arrow:hover {
+  transform: scale(1.2); /* Увеличение иконки при наведении */
+}
+
+.user-arrow.flipped {
+  transform: rotate(180deg); /* Поворот на 180 градусов */
+}
+
+.text-danger {
+color: #2e2e2e;
+}
+
+/* Контейнер для поиска и кнопки */
+.table-header {
+  display: flex;
+  justify-content: space-between; /* Элементы располагаются по краям */
+  align-items: center;
+  margin-bottom: 2.5rem; /* Отступ от таблицы */
+}
+
+/* Стили для поля поиска */
+.search-input {
+width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #e4e4e7; /* Цвет обводки */
+    border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  padding-right: 40px; /* Отступ для иконки */
+}
+
+/* Иконка поиска */
+.search-icon {
+  position: absolute;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none; /* Чтобы клик не реагировал на иконку */
+}
+
+.search-input:focus {
+  border-color: #615EF0; /* Синий цвет рамки при фокусе */
+}
+
+/* Стили для кнопки "Добавить" */
+.add-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #615EF0;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #615ef0; /* Более темный оттенок синего */
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 42.5rem; /* Ширина контейнера соответствует полю поиска */
+}
+
+/* Контейнер для выпадающего списка */
+.select-container {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Заголовок выпадающего списка */
+.select-label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #333; /* Цвет текста */
+}
+
+/* Основной компонент Select */
+.custom-select .nextui-select-trigger {
+  background-color: #ffffff; /* Белый фон */
+  color: #333; /* Цвет текста */
+  border: 1px solid #ddd; /* Обводка */
+  border-radius: 8px; /* Скругленные углы */
+  padding: 8px 16px; /* Внутренние отступы */
+  font-size: 14px; /* Размер текста */
+}
+
+/* Выпадающий список */
+.custom-dropdown {
+  background-color: #ffffff; /* Белый фон выпадающего списка */
+  border: 1px solid #ddd; /* Обводка */
+  border-radius: 8px; /* Скругленные углы */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Легкая тень */
+  padding: 8px 0; /* Отступы внутри */
+}
+
+/* Элементы выпадающего списка */
+.custom-dropdown .nextui-select-item {
+  padding: 8px 16px; /* Отступы внутри элемента */
+  color: #333; /* Цвет текста */
+  font-size: 14px; /* Размер текста */
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Анимация при наведении */
+}
+
+/* Эффект при наведении на элементы */
+.custom-dropdown .nextui-select-item:hover {
+  background-color: #f0f0f0; /* Светло-серый фон при наведении */
+  color: #000; /* Цвет текста при наведении */
+}
+
+.custom-table-header {
+  background-color: #dce0e5; /* Цвет фона */
+  border-radius: 8px 8px 0 0; /* Закругление только сверху */
+}
+
+.leading-none {
+    line-height: normal; /* или любое другое значение */
+}
+
+/* Стиль для фоновой части страницы */
+.confirm-page {
+  background-color: #f8f9fa; /* Светлый фон */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Минимальная высота экрана */
+}
+
+/* Стиль для карточки */
+.confirm-card {
+  width: 560px; /* Фиксированная ширина */
+  height: 210px; /* Фиксированная высота */
+  padding: 48px; /* Внутренние отступы */
+  border-radius: 8px; /* Округлённые углы */
+  background-color: #ffffff; /* Белый фон */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 16px; /* Расстояние между элементами внутри карточки */
+}
+
+/* Стиль для заголовка */
+.confirm-title {
+  font-size: 1.5rem; /* Размер текста */
+  font-weight: 600; /* Полужирный шрифт */
+  color: #333333; /* Тёмный цвет текста */
+  text-align: left; /* Выравнивание по левому краю */
+}
+
+/* Стиль для текста */
+.confirm-text {
+  font-size: 1rem; /* Размер текста */
+  color: #555555; /* Серый цвет текста */
+  line-height: 1.5; /* Межстрочный интервал */
+  text-align: left; /* Выравнивание по левому краю */
+}
+

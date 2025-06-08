@@ -1,0 +1,79 @@
+/* Убираем тени из таблицы */
+.shadow-small {
+  --tw-shadow: none;
+  --tw-shadow-colored: none;
+  box-shadow: none; /* Убирает любые тени */
+}
+
+.p-4 {
+  padding: 0rem;
+}
+
+.gap-4 {
+  gap: 2.5rem;
+}
+
+/* Добавление линии между строками таблицы */
+.table-row {
+  border-bottom: 1px solid #DCE0E5;
+}
+
+/* Убираем линию между последней строкой и последним элементом */
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* Стили для выравнивания кнопки и поля поиска */
+.top-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px; /* Расстояние между элементами */
+}
+
+
+.input-wrapper {
+  flex-grow: 1; /* Растягивает поле поиска на доступное пространство */
+  max-width: 680px; /* Максимальная ширина поиска */
+  position: relative; /* Необходимо для позиционирования иконки */
+}
+
+.input-search {
+  height: 2.5rem; /* Устанавливаем одинаковую высоту для поиска и кнопки */
+  width: 100%; /* Ширина инпута растягивается на доступное пространство */
+  padding-right: 2rem; /* Отступ справа для иконки */
+}
+
+/* Позиционирование иконки внутри поля поиска */
+.input-search .nextui-input-end-content {
+  position: absolute;
+  right: 10px; /* Иконка будет расположена справа */
+  top: 50%; /* Центрируем по вертикали */
+  transform: translateY(-50%); /* Точная центровка по вертикали */
+}
+
+.add-button {
+  width: 9rem; /* Фиксированная ширина для кнопки */
+  transition: background-color 0.3s ease; /* Плавный переход цвета фона */
+}
+
+.add-button:hover {
+  background-color: #3a5df7; /* Цвет фона при наведении */
+  color: #fff; /* Белый цвет текста при наведении */
+}
+
+/* Стили для основной кнопки */
+.bg-primary {
+   padding: 1.25rem;
+   font-size: 1rem;
+   background-color: #615ef0;
+   color: #ffffff;
+   border-radius: 4px;
+   text-align: center;
+   transition: background-color 0.2s ease-in-out;
+}
+
+/* Стили для текста с нормальным шрифтом */
+.font-normal {
+  font-weight: 400;
+}

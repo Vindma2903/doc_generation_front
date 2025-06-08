@@ -1,0 +1,52 @@
+.status-indicator {
+  display: inline-flex; /* Используем flex для выравнивания текста и круга */
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  height: 24px; /* Ограничиваем высоту */
+  max-height: 24px; /* Устанавливаем максимальную высоту */
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.status-indicator .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%; /* Делаем круг */
+  margin-right: 8px; /* Отступ справа от круга */
+}
+
+.status-indicator.активен {
+  background-color: #e0ffe0;
+  color: #25a825;
+}
+
+.status-indicator.активен .status-dot {
+  background-color: #25a825;
+}
+
+.status-indicator.ожидает-подтверждения {
+  background-color: #fff0c2;
+  color: #a88525;
+}
+
+.status-indicator.ожидает-подтверждения .status-dot {
+  background-color: #a88525;
+}
+
+.status-indicator.заблокирован {
+  background-color: #ffe0e0;
+  color: #a82525;
+}
+
+.status-indicator.заблокирован .status-dot {
+  background-color: #a82525;
+}
+
+.text-warning
+{
+color:#2E2E2E;
+}
