@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useEditor, EditorContent, EditorContext } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -13,8 +13,7 @@ import TextStyle from "@tiptap/extension-text-style"
 import FontFamily from "@tiptap/extension-font-family"
 import Link from "@tiptap/extension-link"
 import { FontSize } from "@/shared/extensions/FontSize"
-
-
+import axios from "axios"
 
 import { TextAlignButton } from "@/shared/ui/common/document/text-align-button"
 import { UndoRedoButton } from "@/shared/ui/common/document/undo-redo-button"
@@ -27,10 +26,14 @@ type Props = {
   onChange: (html: string) => void
   onCancel?: () => void
   onBack?: () => void
+  documentId: number
+  documentName: string
 }
 
-export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
+export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId, documentName }) => {
+  console.log("🧩 Инициализация редактора: documentId =", documentId)
   const [isDropdownOpen, setDropdownOpen] = useState(false)
+  const contentRef = useRef(content)
 
   const editor = useEditor({
     extensions: [
@@ -50,8 +53,9 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
     ],
     content,
     onUpdate({ editor }) {
-      console.log("HTML content:", editor.getHTML()) // <--- вот это
-      onChange(editor.getHTML())
+      const html = editor.getHTML()
+      contentRef.current = html
+      onChange(html)
     },
   })
 
@@ -60,6 +64,44 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
       editor.commands.setContent(content)
     }
   }, [content, editor])
+
+  // ⏱️ Автосохранение только content
+  // ⏱️ Автосохранение каждые 5 секунд
+  useEffect(() => {
+    if (!documentId) return
+
+    const interval = setInterval(() => {
+      axios
+        .put("http://localhost:8080/templates/update-content", {
+          id: documentId,
+          content: contentRef.current,
+        })
+        .then(() => {
+          console.log("✅ Автосохранение выполнено", new Date().toLocaleTimeString())
+        })
+        .catch((err) => {
+          console.error("❌ Ошибка автосохранения:", err)
+        })
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [documentId])
+
+
+  const handleSave = async () => {
+    if (!editor) return
+    try {
+      await axios.put("http://localhost:8080/templates/update", {
+        id: documentId,
+        name: documentName,
+        content: editor.getHTML(),
+      })
+      alert("Содержимое сохранено")
+    } catch (error) {
+      console.error("Ошибка при сохранении:", error)
+      alert("Не удалось сохранить")
+    }
+  }
 
   if (!editor) return null
 
@@ -79,17 +121,13 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
   const fontSizes = ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "72px"]
   const currentFontSize = editor.getAttributes("fontSize")?.fontSize || "16px"
 
-
   return (
     <EditorContext.Provider value={{ editor }}>
       <div className="editor-container">
         <div className="editor-toolbar">
           <UndoRedoButton editor={editor} action="undo" />
           <UndoRedoButton editor={editor} action="redo" />
-
           <HeadingDropdownMenu editor={editor} levels={[1, 2, 3, 4, 5, 6]} />
-
-          {/* Font Family Selector */}
           <select
             onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
             value={editor.getAttributes("textStyle")?.fontFamily || "Roboto"}
@@ -97,8 +135,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
             <option value="Roboto">Roboto</option>
             <option value="Times New Roman Custom">Times New Roman</option>
           </select>
-
-          {/* Font Size Selector */}
           <select
             value={currentFontSize}
             onChange={(e) => {
@@ -112,21 +148,16 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
           >
             <option value="default">По умолчанию</option>
             {fontSizes.map((size) => (
-              <option key={size} value={size}>
-                {size.replace("px", "")}
-              </option>
+              <option key={size} value={size}>{size.replace("px", "")}</option>
             ))}
           </select>
-
           {formatButton("B", () => editor.chain().focus().toggleBold().run(), "Bold")}
           {formatButton(<img src="/Italic.svg" alt="Italic" className="editor-icon" />, () => editor.chain().focus().toggleItalic().run(), "Italic")}
           {formatButton(<img src="/underline-icon.svg" alt="Underline" className="editor-icon" />, () => editor.chain().focus().toggleUnderline().run(), "Underline")}
-
           {formatButton("🔗", () => {
             const url = prompt("Введите URL")
             if (url) editor.chain().focus().setLink({ href: url }).run()
           }, "Insert link")}
-
           <div className="dropdown">
             <button
               type="button"
@@ -138,7 +169,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
             >
               <img src="/align-left.svg" alt="Align" className="editor-icon" />
             </button>
-
             {isDropdownOpen && (
               <div className="dropdown-content horizontal">
                 <TextAlignButton editor={editor} align="left" onClick={() => setDropdownOpen(false)}>
@@ -156,7 +186,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
               </div>
             )}
           </div>
-
           {formatButton("•", () => editor.chain().focus().toggleBulletList().run(), "Bullet List")}
           {formatButton("1.", () => editor.chain().focus().toggleOrderedList().run(), "Numbered List")}
           {formatButton("☑", () => editor.chain().focus().toggleTaskList().run(), "Task List")}
@@ -165,9 +194,11 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange }) => {
           {formatButton("x²", () => editor.chain().focus().toggleSuperscript().run(), "Superscript")}
           {formatButton("x₂", () => editor.chain().focus().toggleSubscript().run(), "Subscript")}
         </div>
-
         <div className="editor-workspace">
           <EditorContent editor={editor} className="editor-document editor-content" />
+        </div>
+        <div style={{ marginTop: "16px" }}>
+          <button onClick={handleSave}>💾 Сохранить</button>
         </div>
       </div>
     </EditorContext.Provider>

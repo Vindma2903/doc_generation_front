@@ -89,9 +89,11 @@ const EditTemplatePage: React.FC = () => {
 
       {/* Используем key, чтобы SimpleEditor не перерендеривался без причины */}
       <SimpleEditor
-        key={template.name + template.content} // гарантирует перерендер только при смене шаблона
+        key={template.name + template.content}
         content={updatedContent}
         onChange={setUpdatedContent}
+        documentId={Number(id)}
+        documentName={editedName}
       />
 
       <button className="edit-template-save-button" onClick={handleSave}>
