@@ -21,7 +21,7 @@ const MainSidebar: React.FC = React.memo(() => {
             to="/document-template"
             className={`menu-link subtitle ${isActive("/document-template") ? "active" : ""}`}
           >
-            <img src="/Template.svg" alt="Шаблоны" className="menu-icon icon" />
+            <img src="public/document/template.svg" alt="Шаблоны" className="menu-icon icon" />
             Шаблоны
           </Link>
 
@@ -30,7 +30,7 @@ const MainSidebar: React.FC = React.memo(() => {
             to="/documents"
             className={`menu-link subtitle ${isActive("/documents") ? "active" : ""}`}
           >
-            <img src="/Document.svg" alt="Документы" className="menu-icon icon" />
+            <img src="public/document/document.svg" alt="Документы" className="menu-icon icon" />
             Документы
           </Link>
 

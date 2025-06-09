@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useEditor, EditorContent, EditorContext } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -6,18 +6,20 @@ import Superscript from "@tiptap/extension-superscript"
 import Subscript from "@tiptap/extension-subscript"
 import TextAlign from "@tiptap/extension-text-align"
 import Typography from "@tiptap/extension-typography"
-import TaskList from "@tiptap/extension-task-list"
-import TaskItem from "@tiptap/extension-task-item"
 import Image from "@tiptap/extension-image"
 import TextStyle from "@tiptap/extension-text-style"
 import FontFamily from "@tiptap/extension-font-family"
 import Link from "@tiptap/extension-link"
 import { FontSize } from "@/shared/extensions/FontSize"
 import axios from "axios"
+import BulletList from "@tiptap/extension-bullet-list"
+import ListItem from "@tiptap/extension-list-item"
+
 
 import { TextAlignButton } from "@/shared/ui/common/document/text-align-button"
 import { UndoRedoButton } from "@/shared/ui/common/document/undo-redo-button"
 import { HeadingDropdownMenu } from "@/shared/ui/common/document/heading-dropdown-menu"
+import { MarkerListButton } from "@/shared/ui/common/document/marker"
 
 import "@/shared/styles/document.css"
 
@@ -31,20 +33,25 @@ type Props = {
 }
 
 export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId, documentName }) => {
-  console.log("🧩 Инициализация редактора: documentId =", documentId)
   const [isDropdownOpen, setDropdownOpen] = useState(false)
-  const contentRef = useRef(content)
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ heading: { levels: [1, 2, 3, 4, 5, 6] } }),
+      StarterKit.configure({
+        heading: { levels: [1, 2, 3, 4, 5, 6] },
+        bulletList: false,
+        listItem: false,
+      }),
+      BulletList.configure({
+        keepMarks: true,
+        keepAttributes: false,
+      }),
+      ListItem,
       Underline,
       Superscript,
       Subscript,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Typography,
-      TaskList,
-      TaskItem.configure({ nested: true }),
       Image,
       TextStyle,
       FontFamily.configure({ types: ["textStyle"] }),
@@ -54,39 +61,30 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId, d
     content,
     onUpdate({ editor }) {
       const html = editor.getHTML()
-      contentRef.current = html
       onChange(html)
+
+      if (documentId) {
+        axios
+          .put("http://localhost:8080/templates/update-content", {
+            id: documentId,
+            content: html,
+          })
+          .then(() => {
+            console.log("✅ Контент успешно обновлен при изменении.")
+          })
+          .catch((err) => {
+            console.error("❌ Ошибка обновления контента:", err)
+          })
+      }
     },
   })
+
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content)
     }
   }, [content, editor])
-
-  // ⏱️ Автосохранение только content
-  // ⏱️ Автосохранение каждые 5 секунд
-  useEffect(() => {
-    if (!documentId) return
-
-    const interval = setInterval(() => {
-      axios
-        .put("http://localhost:8080/templates/update-content", {
-          id: documentId,
-          content: contentRef.current,
-        })
-        .then(() => {
-          console.log("✅ Автосохранение выполнено", new Date().toLocaleTimeString())
-        })
-        .catch((err) => {
-          console.error("❌ Ошибка автосохранения:", err)
-        })
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [documentId])
-
 
   const handleSave = async () => {
     if (!editor) return
@@ -128,6 +126,7 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId, d
           <UndoRedoButton editor={editor} action="undo" />
           <UndoRedoButton editor={editor} action="redo" />
           <HeadingDropdownMenu editor={editor} levels={[1, 2, 3, 4, 5, 6]} />
+          <MarkerListButton editor={editor} />
           <select
             onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
             value={editor.getAttributes("textStyle")?.fontFamily || "Roboto"}
@@ -186,9 +185,6 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId, d
               </div>
             )}
           </div>
-          {formatButton("•", () => editor.chain().focus().toggleBulletList().run(), "Bullet List")}
-          {formatButton("1.", () => editor.chain().focus().toggleOrderedList().run(), "Numbered List")}
-          {formatButton("☑", () => editor.chain().focus().toggleTaskList().run(), "Task List")}
           {formatButton("S", () => editor.chain().focus().toggleStrike().run(), "Strikethrough")}
           {formatButton("</>", () => editor.chain().focus().toggleCode().run(), "Code")}
           {formatButton("x²", () => editor.chain().focus().toggleSuperscript().run(), "Superscript")}
