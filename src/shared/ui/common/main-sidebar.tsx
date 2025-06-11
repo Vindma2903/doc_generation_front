@@ -17,6 +17,16 @@ const MainSidebar: React.FC = React.memo(() => {
           </button>
         </div>
         <nav className="menu-links">
+
+          <Link
+            to="/tags"
+            className={`menu-link subtitle ${isActive("/tags") ? "active" : ""}`}
+          >
+            <img src="public/document/document.svg" alt="Теги" className="menu-icon icon" />
+            Теги
+          </Link>
+
+
           <Link
             to="/document-template"
             className={`menu-link subtitle ${isActive("/document-template") ? "active" : ""}`}

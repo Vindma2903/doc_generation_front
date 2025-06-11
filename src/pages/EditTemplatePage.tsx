@@ -13,7 +13,6 @@ const EditTemplatePage: React.FC = () => {
   const [editedName, setEditedName] = useState("")
   const [updatedContent, setUpdatedContent] = useState("")
 
-  // Загрузка шаблона при монтировании
   useEffect(() => {
     const fetchTemplate = async () => {
       if (!id) return
@@ -34,21 +33,6 @@ const EditTemplatePage: React.FC = () => {
     fetchTemplate()
   }, [id])
 
-  const handleSave = async () => {
-    if (!template) return
-
-    try {
-      await axios.put(`http://localhost:8080/templates/${id}`, {
-        ...template,
-        content: updatedContent,
-      })
-      alert("Содержимое сохранено!")
-    } catch (error) {
-      console.error("Ошибка сохранения:", error)
-      alert("Ошибка при сохранении содержимого")
-    }
-  }
-
   const handleNameBlur = async () => {
     if (!id || !editedName.trim()) return
 
@@ -65,6 +49,12 @@ const EditTemplatePage: React.FC = () => {
     }
   }
 
+  const handleGoToFill = () => {
+    if (id) {
+      navigate(`/documents/fill/${id}`)
+    }
+  }
+
   if (loading) return <div>Загрузка шаблона...</div>
   if (!template) return <div>Шаблон не найден</div>
 
@@ -73,7 +63,7 @@ const EditTemplatePage: React.FC = () => {
       <div className="edit-template-header">
         <button
           className="edit-template-back-button"
-          onClick={() => navigate("/templates")}
+          onClick={() => navigate(-1)}
         >
           <img src="/return-icon.svg" alt="Назад" className="back-icon" />
         </button>
@@ -85,9 +75,25 @@ const EditTemplatePage: React.FC = () => {
           onBlur={handleNameBlur}
           className="edit-template-rename-input"
         />
+
+        {/* Кнопка перехода к заполнению */}
+        <button
+          className="edit-template-fill-button"
+          onClick={handleGoToFill}
+          style={{
+            marginLeft: "12px",
+            padding: "8px 16px",
+            backgroundColor: "#615EF0",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer"
+          }}
+        >
+          Перейти к настройке шаблона
+        </button>
       </div>
 
-      {/* Используем key, чтобы SimpleEditor не перерендеривался без причины */}
       <SimpleEditor
         key={template.name + template.content}
         content={updatedContent}
@@ -95,10 +101,6 @@ const EditTemplatePage: React.FC = () => {
         documentId={Number(id)}
         documentName={editedName}
       />
-
-      <button className="edit-template-save-button" onClick={handleSave}>
-        Сохранить содержимое
-      </button>
     </div>
   )
 }

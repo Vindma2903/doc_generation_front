@@ -224,6 +224,18 @@
     overflow: auto;
 }
 
+.page {
+    width: 794px;
+    height: 1123px;
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+
 .editor-document {
     background-color: #fff;
     width: 794px; /* A4 width in px at 96dpi */
@@ -370,15 +382,217 @@
 
 
 /* ✅ Вместо этого ничего не пишите, или сделайте так: */
-.editor-content [style*="font-size"] {
-    /* ничего не нужно, браузер сам применит inline стиль */
-}
-
+/* Общие стили для списков */
 .editor-content ul {
     list-style-type: disc;
     padding-left: 1.5em;
 }
 
+.editor-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin: 0.5em 0;
+}
+
 .editor-content li {
     margin-bottom: 0.25em;
+}
+
+/* Чек-лист (taskList) */
+.editor-content ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 1.5em;
+    margin: 0;
+}
+
+/* Каждый элемент taskItem */
+.editor-content li[data-type="taskItem"] {
+    margin: 4px 0;
+}
+
+/* Внутренний контейнер (обязательно именно > div) */
+.editor-content li[data-type="taskItem"] > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+/* Чекбокс */
+.editor-content li[data-type="taskItem"] input[type="checkbox"] {
+    margin: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Текст рядом с чекбоксом (если вложен еще один div) */
+.editor-content li[data-type="taskItem"] > div > div {
+    flex: 1;
+}
+
+/* Обертка внутри taskItem (чтобы чекбокс и текст были в одной строке) */
+.editor-content li[data-type="taskItem"] > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+/* Убираем перенос и отступ у label */
+.editor-content li[data-type="taskItem"] label {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Чекбокс не должен растягиваться */
+.editor-content li[data-type="taskItem"] input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Текст — занимает оставшееся место */
+.editor-content li[data-type="taskItem"] > div > div {
+    flex: 1;
+}
+
+.editor-content li[data-type="taskItem"] {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 4px 0;
+}
+
+/* Убедись, что и label, и div идут по горизонтали */
+.editor-content li[data-type="taskItem"] > label {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.editor-content li[data-type="taskItem"] > div {
+    flex: 1;
+}
+
+
+
+
+.variable-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.variable-button:hover {
+    background: #eef0f2;
+}
+
+.drag-icon {
+    font-size: 16px;
+    color: #999;
+}
+
+/* Кнопки действия */
+.template-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* Кнопка "Создать" (примерно, можно адаптировать под существующий стиль) */
+.create-button {
+    padding: 8px 16px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Кнопка "Отмена" */
+.cancel-button {
+    padding: 8px 16px;
+    background-color: #ffffff;
+    border: 1px solid #E4E4E7;
+    border-radius: 4px;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.editor-container-with-sidebar {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.variable-panel {
+    width: 280px;
+    border-left: 1px solid #e0e0e0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.variable-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f1f1f1;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s ease;
+}
+
+.variable-button:hover {
+    background-color: #e0e0e0;
+}
+
+.drag-icon {
+    font-weight: bold;
+    color: #999;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.variable-search-input {
+    padding: 8px 36px 8px 10px; /* отступ справа для иконки */
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 36px; /* важно: фиксируем высоту для точного позиционирования */
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    opacity: 0.6;
 }

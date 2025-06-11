@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface ProfileDropdownProps {
   firstName: string;
@@ -7,6 +9,33 @@ interface ProfileDropdownProps {
 }
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, email }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        await axios.post(
+          "http://localhost:8080/logout",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+
+      // Удаляем токен и перенаправляем на логин
+      localStorage.removeItem("token");
+      navigate("/login");
+    } catch (err) {
+      console.error("Ошибка при выходе:", err);
+      alert("Ошибка при выходе из аккаунта");
+    }
+  };
+
   return (
     <div
       style={{
@@ -51,43 +80,29 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
       <hr style={{ borderColor: "#f0f0f0", margin: "12px 0" }} />
 
       {/* Настройки профиля */}
-      <div
+      <a
+        href="/account-user"
         style={{
           display: "flex",
           alignItems: "center",
           padding: "8px 0",
-          cursor: "pointer",
+          textDecoration: "none",
+          color: "inherit",
         }}
       >
-        <a
-          href="/account-user"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            color: "inherit",
-            width: "100%",
-          }}
-        >
-          <img
-            src="/setting-icon.svg"
-            alt="Настройки"
-            style={{
-              width: "20px",
-              height: "20px",
-              marginRight: "12px",
-            }}
-          />
-          <span style={{ fontSize: "14px", color: "#2e2e2e" }}>
-            Настройки профиля
-          </span>
-        </a>
-      </div>
+        <img
+          src="/setting-icon.svg"
+          alt="Настройки"
+          style={{ width: "20px", height: "20px", marginRight: "12px" }}
+        />
+        <span style={{ fontSize: "14px", color: "#2e2e2e" }}>Настройки профиля</span>
+      </a>
 
       <hr style={{ borderColor: "#f0f0f0", margin: "12px 0" }} />
 
       {/* Выход */}
       <div
+        onClick={handleLogout}
         style={{
           display: "flex",
           alignItems: "center",
@@ -98,11 +113,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ firstName, lastName, 
         <img
           src="/exit.svg"
           alt="Выход"
-          style={{
-            width: "20px",
-            height: "20px",
-            marginRight: "12px",
-          }}
+          style={{ width: "20px", height: "20px", marginRight: "12px" }}
         />
         <span style={{ fontSize: "14px", color: "#2e2e2e" }}>Выход</span>
       </div>

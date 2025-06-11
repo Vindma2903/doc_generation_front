@@ -56,19 +56,25 @@ const DocumentTemplatePage: React.FC = () => {
         return;
       }
 
-      await axios.post("http://localhost:8080/templates/create", {
+      const response = await axios.post("http://localhost:8080/templates/create", {
         user_id: Number(userId),
         name: templateName,
         content: "",
       });
 
+      const newTemplateId = response.data?.id;
+      if (!newTemplateId) {
+        throw new Error("Сервер не вернул ID нового шаблона");
+      }
+
       setShowModal(false);
-      navigate("/create-template");
+      navigate(`/edit-template/${newTemplateId}`);
     } catch (error) {
       console.error("Ошибка при создании шаблона:", error);
       alert("Не удалось создать шаблон");
     }
   };
+
 
   return (
     <div className="home-container">
@@ -83,7 +89,7 @@ const DocumentTemplatePage: React.FC = () => {
           <button
             onClick={() => setShowModal(true)}
             style={{
-              backgroundColor: "#0070f3",
+              backgroundColor: "#615EF0",
               color: "#fff",
               border: "none",
               borderRadius: "6px",
@@ -142,7 +148,7 @@ const DocumentTemplatePage: React.FC = () => {
         {showModal && (
           <div style={modalOverlay}>
             <div style={modalContent}>
-              <h2 style={{ marginBottom: "12px" }}>Создать шаблон</h2>
+              <h2 style={{ marginBottom: "12px", fontSize: "18px" }}>Создать шаблон</h2>
               <input
                 type="text"
                 value={templateName}
@@ -150,16 +156,40 @@ const DocumentTemplatePage: React.FC = () => {
                 placeholder="Название шаблона"
                 style={{
                   width: "100%",
-                  padding: "8px",
-                  marginBottom: "12px",
+                  padding: "10px 12px",
+                  marginBottom: "16px",
                   fontSize: "14px",
+                  border: "1px solid #E4E4E7",
+                  borderRadius: "4px",
+                  boxSizing: "border-box",
                 }}
               />
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                <button onClick={() => setShowModal(false)}>Отмена</button>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+                <button
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#fff",
+                    border: "1px solid #E4E4E7",
+                    borderRadius: "4px",
+                    color: "#333",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                  }}
+                >
+                  Отмена
+                </button>
                 <button
                   onClick={handleCreateTemplate}
-                  style={{ backgroundColor: "#0070f3", color: "white", padding: "8px 12px" }}
+                  style={{
+                    backgroundColor: "#615EF0",
+                    color: "white",
+                    padding: "8px 16px",
+                    border: "none",
+                    borderRadius: "4px",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                  }}
                 >
                   Создать
                 </button>
@@ -167,6 +197,7 @@ const DocumentTemplatePage: React.FC = () => {
             </div>
           </div>
         )}
+
       </main>
     </div>
   );

@@ -20,6 +20,11 @@ import IntegrationPage from "@/pages/integration-page";
 import DocumentTemplatePage from "@/pages/document-template";
 import CreateTemplatePage from "@/pages/create-templates";
 import EditTemplatePage from "@/pages/EditTemplatePage"; // добавь в импорты
+import { TagPage } from "@/pages/tag-page"
+import { DocumentsPage } from "@/pages/documents"; // путь подкорректируй под свою структуру
+import FillTemplatePage from "@/pages/FillTemplatePage"
+
+
 
 
 createRoot(document.getElementById("root")!).render(
@@ -45,6 +50,12 @@ createRoot(document.getElementById("root")!).render(
         <Route element={<DocumentTemplatePage />} path="/document-template" />
         <Route path="/create-template" element={<CreateTemplatePage />} />
         <Route path="/edit-template/:id" element={<EditTemplatePage />} />
+        <Route path="/tags" element={<TagPage />} />
+        <Route element={<DocumentsPage />} path="/documents" />
+        <Route path="/documents/fill/:id" element={<FillTemplatePage />} />
+
+
+
 
 
       </Routes>
