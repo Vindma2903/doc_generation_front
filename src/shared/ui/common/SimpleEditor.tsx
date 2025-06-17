@@ -13,22 +13,26 @@ import Link from "@tiptap/extension-link"
 import BulletList from "@tiptap/extension-bullet-list"
 import OrderedList from "@tiptap/extension-ordered-list"
 import ListItem from "@tiptap/extension-list-item"
-import TaskList from "@tiptap/extension-task-list"
-import TaskItem from "@tiptap/extension-task-item"
 import axios from "axios"
 
-import { FontSize } from "@/shared/extensions/FontSize"
 import { TextAlignButton } from "@/shared/ui/common/document/text-align-button"
 import { UndoRedoButton } from "@/shared/ui/common/document/undo-redo-button"
 import { HeadingDropdownMenu } from "@/shared/ui/common/document/heading-dropdown-menu"
 import { MarkerListButton } from "@/shared/ui/common/document/marker"
 import { OrderedListButton } from "@/shared/ui/common/document/ordered-list"
-import { LayoutListButton } from "@/shared/ui/common/document/layout-list"
 import { VariablePanel } from "@/shared/ui/common/document/VariablePanel"
-
-
+import { SizeTextSelector } from "@/shared/ui/common/document/size-txt"
+import { SelectFontFamily } from "@/shared/ui/common/document/select-font"
+import { useTemplateStyles } from "@/shared/ui/common/document/style-txt"
+import { StyleMark } from "@/shared/extensions/StyleMark"
 
 import "@/shared/styles/document.css"
+
+type TemplateStyle = {
+  selector: string
+  styles: Record<string, string>
+  scope: "global" | "inline"
+}
 
 type Props = {
   content: string
@@ -39,76 +43,117 @@ type Props = {
   documentName: string
 }
 
+// ✅ Расширяем TextStyle для поддержки style=""
+const ExtendedTextStyle = TextStyle.extend({
+  addAttributes() {
+    return {
+      style: {
+        default: null,
+        parseHTML: el => el.getAttribute("style"),
+        renderHTML: attrs => (attrs.style ? { style: attrs.style } : {}),
+      },
+    }
+  },
+})
+
+// 🔁 Подставляем стили в HTML по data-style-id
+function applyInlineStylesFromDB(html: string, styles: TemplateStyle[]) {
+  let updatedHtml = html
+
+  styles.forEach(style => {
+    if (style.scope !== "inline") return
+
+    const match = style.selector.match(/data-style-id="(.+?)"/)
+    if (!match) return
+    const styleId = match[1]
+
+    const styleStr = Object.entries(style.styles)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join("; ")
+
+    const regex = new RegExp(`(<span[^>]*data-style-id="${styleId}"[^>]*)(>)`, "g")
+    updatedHtml = updatedHtml.replace(regex, `$1 style="${styleStr}"$2`)
+  })
+
+  return updatedHtml
+}
+
 export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
+  const [lastFontSize, setLastFontSize] = useState("12px")
+  const [templateStyles, setTemplateStyles] = useState<TemplateStyle[]>([])
+  const [initialContentLoaded, setInitialContentLoaded] = useState(false)
+
+  // 🧩 Конфигурируем StyleMark до useEditor
+  const configuredStyleMark = StyleMark.configure({ editor: null })
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        heading: { levels: [1, 2, 3, 4, 5, 6] },
-        bulletList: false,
-        orderedList: false,
-        listItem: false,
-      }),
-      BulletList.configure({ keepMarks: true, keepAttributes: false }),
+      StarterKit.configure({ heading: { levels: [1, 2, 3, 4, 5, 6] }, bulletList: false, orderedList: false, listItem: false }),
+      BulletList.configure({ keepMarks: true }),
       OrderedList,
       ListItem,
-      TaskList,
-      TaskItem.configure({ nested: true }),
       Underline,
       Superscript,
       Subscript,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Typography,
       Image,
-      TextStyle,
+      ExtendedTextStyle,
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
-      FontSize,
+      configuredStyleMark, // ✅ Используем локальную переменную
     ],
     content,
     onUpdate({ editor }) {
       const html = editor.getHTML()
       onChange(html)
 
-      if (documentId) {
-        axios.put("http://localhost:8080/templates/update-content", {
-          id: documentId,
-          content: html,
-        }).catch(err => console.error("❌ Ошибка обновления контента:", err))
-      }
+      axios.put("http://localhost:8080/templates/update-content", {
+        id: documentId,
+        content: html,
+      }).catch(err => console.error("❌ Ошибка обновления контента:", err))
     },
   })
 
+  // ⛓ Привязка editor к StyleMark после инициализации
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content)
+    if (editor && !configuredStyleMark.options.editor) {
+      configuredStyleMark.options.editor = editor
     }
-  }, [content, editor])
+  }, [editor])
 
+  // 🎯 Загружаем стили и применяем к контенту
+  useTemplateStyles(
+    editor,
+    documentId,
+    setTemplateStyles,
+    templateStyles,
+    content,
+    initialContentLoaded,
+    setInitialContentLoaded
+  )
+
+  useEffect(() => {
+    if (editor && initialContentLoaded) {
+      const styledHtml = applyInlineStylesFromDB(content, templateStyles)
+      if (styledHtml !== editor.getHTML()) {
+        editor.commands.setContent(styledHtml, false)
+      }
+    }
+  }, [initialContentLoaded, templateStyles])
 
   if (!editor) return null
 
   const formatButton = (label: React.ReactNode, action: () => void, title?: string) => (
-    <button
-      type="button"
-      title={title}
-      onMouseDown={(e) => {
-        e.preventDefault()
-        action()
-      }}
-    >
+    <button type="button" title={title} onMouseDown={(e) => { e.preventDefault(); action() }}>
       {label}
     </button>
   )
 
-  const fontSizes = ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "72px"]
-  const currentFontSize = editor.getAttributes("fontSize")?.fontSize || "16px"
-
   return (
     <EditorContext.Provider value={{ editor }}>
       <div className="editor-container-with-sidebar">
-        {/* Левая часть: редактор */}
         <div className="editor-container">
           <div className="editor-toolbar">
             <UndoRedoButton editor={editor} action="undo" />
@@ -116,62 +161,31 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
             <HeadingDropdownMenu editor={editor} levels={[1, 2, 3, 4, 5, 6]} />
             <MarkerListButton editor={editor} />
             <OrderedListButton editor={editor} />
-            <LayoutListButton editor={editor} />
-            <select
-              onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
-              value={editor.getAttributes("textStyle")?.fontFamily || "Roboto"}
-            >
-              <option value="Roboto">Roboto</option>
-              <option value="Times New Roman Custom">Times New Roman</option>
-            </select>
-            <select
-              value={currentFontSize}
-              onChange={(e) => {
-                const size = e.target.value
-                if (size === "default") {
-                  editor.chain().focus().unsetFontSize().run()
-                } else {
-                  editor.chain().focus().setFontSize(size).run()
-                }
-              }}
-            >
-              <option value="default">По умолчанию</option>
-              {fontSizes.map((size) => (
-                <option key={size} value={size}>{size.replace("px", "")}</option>
-              ))}
-            </select>
-            {formatButton(<img src="/document/Bold.svg" alt="Bold" className="editor-icon" />, () => editor.chain().focus().toggleBold().run(), "Bold")}
-            {formatButton(<img src="/Italic.svg" alt="Italic" className="editor-icon" />, () => editor.chain().focus().toggleItalic().run(), "Italic")}
-            {formatButton(<img src="/underline-icon.svg" alt="Underline" className="editor-icon" />, () => editor.chain().focus().toggleUnderline().run(), "Underline")}
-            {formatButton(<img src="/document/paperclip.svg" alt="Insert link" className="editor-icon" />, () => {
+            <SelectFontFamily editor={editor} documentId={documentId} setStyles={setTemplateStyles} />
+            <SizeTextSelector
+              editor={editor}
+              lastFontSize={lastFontSize}
+              setLastFontSize={setLastFontSize}
+              documentId={documentId}
+              setStyles={setTemplateStyles}
+            />
+            {formatButton(<img src="/document/Bold.svg" alt="Bold" />, () => editor.chain().focus().toggleBold().run(), "Bold")}
+            {formatButton(<img src="/Italic.svg" alt="Italic" />, () => editor.chain().focus().toggleItalic().run(), "Italic")}
+            {formatButton(<img src="/underline-icon.svg" alt="Underline" />, () => editor.chain().focus().toggleUnderline().run(), "Underline")}
+            {formatButton(<img src="/document/paperclip.svg" alt="Insert link" />, () => {
               const url = prompt("Введите URL")
               if (url) editor.chain().focus().setLink({ href: url }).run()
             }, "Insert link")}
             <div className="dropdown">
-              <button
-                type="button"
-                className="dropdown-trigger"
-                onMouseDown={(e) => {
-                  e.preventDefault()
-                  setDropdownOpen((prev) => !prev)
-                }}
-              >
-                <img src="/align-left.svg" alt="Align" className="editor-icon" />
+              <button type="button" onMouseDown={(e) => { e.preventDefault(); setDropdownOpen(prev => !prev) }}>
+                <img src="/align-left.svg" alt="Align" />
               </button>
               {isDropdownOpen && (
                 <div className="dropdown-content horizontal">
-                  <TextAlignButton editor={editor} align="left" onClick={() => setDropdownOpen(false)}>
-                    <img src="/align-left.svg" alt="Align Left" className="editor-icon" />
-                  </TextAlignButton>
-                  <TextAlignButton editor={editor} align="center" onClick={() => setDropdownOpen(false)}>
-                    <img src="/align-center.svg" alt="Align Center" className="editor-icon" />
-                  </TextAlignButton>
-                  <TextAlignButton editor={editor} align="right" onClick={() => setDropdownOpen(false)}>
-                    <img src="/align-right.svg" alt="Align Right" className="editor-icon" />
-                  </TextAlignButton>
-                  <TextAlignButton editor={editor} align="justify" onClick={() => setDropdownOpen(false)}>
-                    <img src="/justify.svg" alt="Justify" className="editor-icon" />
-                  </TextAlignButton>
+                  <TextAlignButton editor={editor} align="left" onClick={() => setDropdownOpen(false)}><img src="/align-left.svg" /></TextAlignButton>
+                  <TextAlignButton editor={editor} align="center" onClick={() => setDropdownOpen(false)}><img src="/align-center.svg" /></TextAlignButton>
+                  <TextAlignButton editor={editor} align="right" onClick={() => setDropdownOpen(false)}><img src="/align-right.svg" /></TextAlignButton>
+                  <TextAlignButton editor={editor} align="justify" onClick={() => setDropdownOpen(false)}><img src="/justify.svg" /></TextAlignButton>
                 </div>
               )}
             </div>
@@ -186,11 +200,8 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
             </div>
           </div>
         </div>
-
-        {/* Правая часть: панель переменных */}
         <VariablePanel onInsert={(value) => editor?.chain().focus().insertContent(value).run()} />
       </div>
     </EditorContext.Provider>
   )
-
 }

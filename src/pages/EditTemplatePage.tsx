@@ -3,15 +3,20 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { SimpleEditor } from "@/shared/ui/common/SimpleEditor"
 import "@/shared/styles/document.css"
+import { useAuth } from "@/features/auth/AuthContext"
 
 const EditTemplatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const [template, setTemplate] = useState<{ name: string; content: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [editedName, setEditedName] = useState("")
   const [updatedContent, setUpdatedContent] = useState("")
+
+  const [showModal, setShowModal] = useState(false)
+  const [newDocName, setNewDocName] = useState("")
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -49,9 +54,21 @@ const EditTemplatePage: React.FC = () => {
     }
   }
 
-  const handleGoToFill = () => {
-    if (id) {
-      navigate(`/documents/fill/${id}`)
+  const handleCreateDocument = async () => {
+    if (!newDocName.trim() || !id || !user) return
+
+    try {
+      const res = await axios.post("http://localhost:8080/documents/create", {
+        user_id: user.id,
+        template_id: Number(id),
+        name: newDocName.trim(),
+      })
+
+      const newDocId = res.data.document_id
+      navigate(`/documents/fill/${newDocId}`)
+    } catch (error) {
+      console.error("Ошибка при создании документа:", error)
+      alert("Не удалось создать документ")
     }
   }
 
@@ -76,10 +93,9 @@ const EditTemplatePage: React.FC = () => {
           className="edit-template-rename-input"
         />
 
-        {/* Кнопка перехода к заполнению */}
         <button
           className="edit-template-fill-button"
-          onClick={handleGoToFill}
+          onClick={() => setShowModal(true)}
           style={{
             marginLeft: "12px",
             padding: "8px 16px",
@@ -90,7 +106,7 @@ const EditTemplatePage: React.FC = () => {
             cursor: "pointer"
           }}
         >
-          Перейти к настройке шаблона
+          Создать документ
         </button>
       </div>
 
@@ -101,8 +117,61 @@ const EditTemplatePage: React.FC = () => {
         documentId={Number(id)}
         documentName={editedName}
       />
+
+      {showModal && (
+        <div style={modalOverlay}>
+          <div style={modalBox}>
+            <h3>Создание документа</h3>
+            <input
+              type="text"
+              placeholder="Введите название документа"
+              value={newDocName}
+              onChange={(e) => setNewDocName(e.target.value)}
+              style={inputStyle}
+            />
+
+            <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button onClick={() => setShowModal(false)}>Отмена</button>
+              <button
+                style={{ backgroundColor: "#615EF0", color: "#fff", padding: "6px 12px", border: "none", borderRadius: "4px" }}
+                onClick={handleCreateDocument}
+              >
+                Создать
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 export default EditTemplatePage
+
+// ===== Стили модального окна =====
+const modalOverlay: React.CSSProperties = {
+  position: "fixed",
+  top: 0, left: 0, right: 0, bottom: 0,
+  backgroundColor: "rgba(0, 0, 0, 0.4)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 1000
+}
+
+const modalBox: React.CSSProperties = {
+  backgroundColor: "#fff",
+  padding: "20px",
+  borderRadius: "8px",
+  width: "320px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+}
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "8px",
+  fontSize: "14px",
+  borderRadius: "4px",
+  border: "1px solid #ccc",
+  boxSizing: "border-box"
+}
