@@ -91,7 +91,13 @@ export const LoginForm = () => {
       </div>
 
       <div className="auth-form__field">
-        <label htmlFor="password" className="auth-form__label">Пароль</label>
+        <div className="auth-form__label-row">
+          <label htmlFor="password" className="auth-form__label">Пароль</label>
+          <a href="/forgot-password" className="auth-form__link auth-form__forgot-link">
+            Забыли пароль?
+          </a>
+        </div>
+
         <Controller
           control={control}
           name="password"
@@ -113,6 +119,7 @@ export const LoginForm = () => {
           }}
         />
       </div>
+
 
       <Button className="auth-form__submit" type="submit">
         Войти

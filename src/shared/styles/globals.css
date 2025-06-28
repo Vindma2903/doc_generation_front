@@ -544,6 +544,9 @@ width: 100%;
 
 
 .bg-primary {
+  width: 100%;
+  min-width: 400px;
+  max-width: 100%;
   padding: 0.5rem;
   font-size: 1rem;
   background-color: #338EF7;
@@ -551,7 +554,49 @@ width: 100%;
   border-radius: 4px;
   text-align: center;
   transition: background-color 0.2s ease-in-out;
+  box-sizing: border-box;
 }
+
+.auth-form__footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-top: 1rem; /* опционально, для отступа сверху */
+}
+
+.auth-form__link {
+  color: #338EF7;              /* тот же синий, что и кнопка */
+  text-decoration: none;       /* убираем подчеркивание */
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.auth-form__link:hover {
+  color: #1a6ed8;              /* немного темнее при наведении */
+  text-decoration: underline;  /* подчёркивание при наведении */
+}
+
+.auth-form__label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.auth-form__forgot-link {
+  font-size: 0.875rem;
+  color: #338EF7;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-form__forgot-link:hover {
+  color: #1a6ed8;
+  text-decoration: underline;
+}
+
+
 
 .input-password__icon {
   width: 20px;
@@ -566,6 +611,13 @@ input[data-slot="input"] {
   padding-left: 12px;
   box-sizing: border-box;
 }
+
+.input-unified {
+  width: 100%;           /* или 300px, если фиксированная ширина */
+  min-width: 400px;      /* опционально */
+  box-sizing: border-box;
+}
+
 
 .font-semibold
 {

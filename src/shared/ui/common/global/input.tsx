@@ -4,7 +4,9 @@ export const Input = (props: InputProps) => {
   return (
     <HeroInput
       {...props}
-      labelPlacement="outside" // 👈 это размещает лейбл над полем
+      className={`input-unified ${props.className ?? ""}`}
+      labelPlacement="outside"
     />
   );
 };
+

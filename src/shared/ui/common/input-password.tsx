@@ -1,12 +1,11 @@
 import { Input, InputProps } from "@heroui/react";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import "@/shared/styles/globals.css";
+import "@/shared/styles/globals.css"; // здесь должен быть .input-unified
 
-export const InputPassword = ({ type = "text", ...props }: InputProps) => {
+export const InputPassword = ({ type = "text", className = "", ...props }: InputProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const isPassword = type === "password";
-
   const inputType = isPassword ? (isVisible ? "text" : "password") : type;
 
   return (
@@ -30,7 +29,7 @@ export const InputPassword = ({ type = "text", ...props }: InputProps) => {
           </button>
         )
       }
-      className="input-password"
+      className={`input-unified ${className}`}
     />
   );
 };
