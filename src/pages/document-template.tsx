@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainSidebar } from "@/shared/ui/common/main-sidebar";
-import "@/shared/styles/home.css";
 import "@/shared/styles/globals.css";
 import "@/shared/styles/document.css";
 import axios from "axios";

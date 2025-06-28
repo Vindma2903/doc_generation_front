@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@nextui-org/react";
+import { Link } from "@heroui/react";
 import { UserProfile } from "@/shared/ui/common/UserProfile";
 import { useLocation } from "react-router-dom";
 

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MainSidebar } from "@/shared/ui/common/main-sidebar";
 import "@/shared/styles/globals.css";
-import "@/shared/styles/admin-users.css";
 import DynamicBreadcrumbs from "@/shared/ui/common/Breadcrumb";
-import UniversalTable from "@/shared/ui/common/table-projects";
+import UniversalTable from "@/shared/ui/common/table-projects.tsx";
 import UsersAction from "@/shared/ui/common/users-action";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext"; // Импортируем useAuth

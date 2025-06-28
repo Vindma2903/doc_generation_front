@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Checkbox, Form, Link } from "@nextui-org/react";
+import { Button, Checkbox, Form, Link } from "@heroui/react";
 import { Input } from "@/shared/ui/common/input";
 import { InputPassword } from "@/shared/ui/common/input-password";
 import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
@@ -67,7 +67,6 @@ export const RegisterForm = () => {
     <div className="w-full flex flex-col gap-5">
       {/* Сообщения об ошибке */}
       {error && <p className="text-red-500 text-center">{error}</p>}
-
       <Form
         className="w-full flex flex-col gap-5"
         onSubmit={handleSubmit(onSubmit)}

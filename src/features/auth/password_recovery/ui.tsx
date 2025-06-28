@@ -1,5 +1,5 @@
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Link } from "@nextui-org/react";
+import { Button, Form, Link } from "@heroui/react";
 import { Input } from "@/shared/ui/common/input";
 
 interface ForgotPasswordFormValues {
@@ -54,7 +54,6 @@ export const ForgotPasswordForm = () => {
           },
         }}
       />
-
       {/* Кнопка восстановления */}
       <Button
         className="forgot-password-submit w-full text-md font-medium"
@@ -64,7 +63,6 @@ export const ForgotPasswordForm = () => {
       >
         Восстановить
       </Button>
-
       {/* Ссылка на вход */}
       <div className="forgot-password-footer flex flex-col gap-2 items-center justify-center h-full text-center">
         <span className="flex flex-row gap-1 justify-center items-center">

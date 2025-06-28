@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import "@/shared/styles/projects.css"; // Подключаем стили
 import "@/shared/styles/globals.css"; // Подключаем стили
 import { MainSidebar } from "@/shared/ui/common/main-sidebar"; // Импортируем компонент MainSidebar
-import TableProjects from "@/shared/ui/common/table-projects"; // Импортируем таблицу
+import TableProjects from "@/shared/ui/common/table-projects.tsx"; // Импортируем таблицу
 import Breadcrumbs from "@/shared/ui/common/Breadcrumb"; // Импортируем хлебные крошки
-import { Switch } from "@nextui-org/react"; // Для отображения переключателя статуса
+import { Switch } from "@heroui/react"; // Для отображения переключателя статуса
 import ProjectDrop from "@/shared/ui/common/project-drop"; // Импортируем ProjectDrop
 
 const columns = [

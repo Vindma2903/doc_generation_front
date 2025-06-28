@@ -6,7 +6,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 const PopUp: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,

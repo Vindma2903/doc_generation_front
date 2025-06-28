@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { User } from "@nextui-org/react";
+import { User } from "@heroui/react";
 import ProfileDropdown from "@/shared/ui/common/profile-drop";
 import axios from "axios";
 

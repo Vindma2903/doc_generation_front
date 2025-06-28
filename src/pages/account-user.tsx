@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "@/shared/styles/globals.css";
-import "@/shared/styles/account-user.css"; // Подключаем CSS файл
 import { MainSidebar } from "@/shared/ui/common/main-sidebar"; // Основное меню
 import { UserAccSidebar } from "@/shared/ui/common/user-acc-sidebar"; // Новое меню
 import Breadcrumbs from "@/shared/ui/common/Breadcrumb"; // Хлебные крошки

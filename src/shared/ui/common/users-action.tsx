@@ -1,4 +1,4 @@
-import { Dropdown, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { Dropdown, DropdownMenu, DropdownItem } from "@heroui/react";
 import { useState } from "react";
 import "@/shared/styles/globals.css"; // Подключаем стили
 

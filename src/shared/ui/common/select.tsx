@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@heroui/react";
 
 export const animals = [
   { key: "Ответы по тексту", label: "Ответы по тексту" },

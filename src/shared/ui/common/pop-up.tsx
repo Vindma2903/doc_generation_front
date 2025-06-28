@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dropdown, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { Dropdown, DropdownMenu, DropdownItem } from "@heroui/react";
 import { Link } from "react-router-dom";
 
 const ProfileDropdown: React.FC = () => {

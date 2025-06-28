@@ -2,6 +2,11 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { Skeleton } from "@/shared/ui/common/auth/Skeleton";
+import { Card, CardContent } from "@/shared/ui/common/auth/Card";
+import { Loader2 } from "lucide-react";
+
+
 // Интерфейс пользователя
 interface User {
   id: number;
@@ -20,44 +25,38 @@ interface AuthContextType {
   checkAuth: () => Promise<void>;
 }
 
-// Создаем контекст
+// Контекст авторизации
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// 🔓 JWT-декодер
+// Декодер JWT
 function parseJwt(token: string): any {
   try {
     return JSON.parse(atob(token.split(".")[1]));
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
-// 🔑 Получить user_id из токена
 export const getUserIdFromToken = (): number | null => {
   const token = localStorage.getItem("access_token");
   if (!token) return null;
-
   const payload = parseJwt(token);
   return payload?.user_id || null;
 };
 
-// Провайдер контекста
+// Провайдер авторизации
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  // ✅ Функция проверки авторизации
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      console.log("🚀 Проверяем авторизацию (GET /auth/check)...");
-      console.log("🔎 Access токен:", token);
-
       const response = await axios.get<{ status: string; user: User }>(
         "http://127.0.0.1:8080/auth/check",
         {
-          withCredentials: true, // важно для работы с HttpOnly cookie
+          withCredentials: true,
           headers: {
             Authorization: `Bearer ${token || ""}`,
           },
@@ -73,11 +72,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       throw new Error("Unauthorized");
-    } catch (error: any) {
-      console.warn("🔁 Access токен истёк. Пытаемся обновить через refresh...");
-
+    } catch {
       try {
-        // ⚠️ Пытаемся обновить access токен
         const refreshResponse = await axios.post<{ access_token: string }>(
           "http://127.0.0.1:8080/refresh",
           {},
@@ -86,11 +82,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const newToken = refreshResponse.data.access_token;
         localStorage.setItem("access_token", newToken);
-
-        // Повторяем checkAuth после обновления токена
         return await checkAuth();
-      } catch (refreshError) {
-        console.error("❌ Ошибка при обновлении токена:", refreshError);
+      } catch {
         setUser(null);
         localStorage.removeItem("access_token");
       }
@@ -99,26 +92,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-
   useEffect(() => {
     checkAuth();
   }, []);
 
   useEffect(() => {
     if (!loading && !user) {
-      console.warn("🔄 Перенаправляем на /login...");
       navigate("/login");
     }
   }, [loading, user, navigate]);
 
   return (
     <AuthContext.Provider value={{ user, loading, setUser, checkAuth }}>
-      {!loading ? children : <div>Загрузка...</div>}
+      {!loading ? (
+        children
+      ) : (
+        <div className="auth-page">
+          <Card className="auth-card">
+            <CardContent>
+              <div className="auth-loader">
+                <Loader2 className="spinner" />
+                <Skeleton className="skeleton-line w-3/4" />
+                <Skeleton className="skeleton-line w-2/3" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };
 
-// ✅ Хук для использования контекста
+// Хук доступа к контексту
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

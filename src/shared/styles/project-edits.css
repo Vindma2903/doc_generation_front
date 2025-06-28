@@ -1,300 +1,38 @@
-.left-section .select-label {
-  margin-bottom: 1rem; /* Расстояние между заголовком и выпадающим списком */
-}
+.project-edits-page {
+  /* Стиль только внутри этой страницы */
 
-.left-section .textarea-label {
-  margin-top: 2.5rem; /* Расстояние между выпадающим списком и текстовой областью */
-  margin-bottom: 1rem; /* Можно добавить отступ снизу для текстовой области, если нужно */
+  .left-section .select-label {
+    margin-bottom: 1rem;
+  }
 
-}
+  .left-section .textarea-label {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
 
-.select-label {
-  font-size: 16px;
-  font-weight: 400;
-  margin-bottom: 0.5rem; /* Расстояние 0.5 rem между заголовком и списком */
-}
+  .select-label {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
 
-.min-h-\[40px\] {
+  .min-h-\[40px\] {
     min-height: 40px;
-}
+  }
 
-/* Добавляем отступ между кнопкой и текстовым полем */
-.left-section .add-button {
-  margin-top: 2.5rem; /* Расстояние между кнопкой и предыдущим элементом */
-}
+  .left-section .add-button {
+    margin-top: 2.5rem;
+  }
 
+  .bg-default-100 {
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #9CA3AF;
+  }
 
-
-
-
-/* Сообщения */
-.messages {
-  margin-bottom: 1rem;
-}
-
-.message {
-  background: #f0f0f0;
-  padding: 0.5rem;
-  border-radius: 5px;
-  margin-bottom: 0.5rem;
-  max-width: 70%;
-}
-
-
-
-
-
-/* Левая часть с настройками */
-.left-section {
-  flex: 1;
-  max-width: 30%;
-}
-
-.content-container {
-  display: flex;
-  align-items: flex-start; /* Выравниваем элементы по верхнему краю */
-  gap: 0rem; /* Убираем промежуток между секциями */
-}
-
-.right-section {
-  width: 424px; /* Фиксированная ширина */
-  height: 584px; /* Высота секции */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  border-radius: 12px;
-  background-color: #ffffff;
-  padding: 1rem;
-  margin-left: 10rem; /* Сдвиг правой секции на 8rem */
-  align-self: flex-start; /* Прижимаем блок к верхнему краю родителя */
-}
-
-
-
-.chat-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 5px 14px 80px rgba(26, 26, 26, 0.12);
-}
-
-/* Сообщения */
-.messages {
-  flex-grow: 1;
-  padding: 1rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border-radius: 18px;
-}
-
-/* Заголовок чата */
-.chat-header {
-   display: flex;
-  align-items: center;
-  padding: 10px;
-  width: 100%; /* Ширина шапки чата — 100% */
-  background-color: #615EF0;
-  border-bottom: 1px solid #ddd;
-  box-sizing: border-box;
-}
-
-/* Сообщения, отправляемые пользователем */
-.message.sent {
-  align-self: flex-end;
-  background-color: #615EF0; /* Фон для сообщения пользователя */
-  color: #ffffff; /* Цвет текста */
-  padding: 10px 14px; /* Внутренние отступы */
-  border-radius: 6px; /* Скругленные углы */
-  font-size: 16px; /* Размер текста */
-  line-height: 1.6; /* Межстрочный интервал */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень */
-}
-
-/* Сообщения, отправляемые ботом */
-.message.received {
-  align-self: flex-start;
-  color: #3F3F3F;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 16px;
-  max-width: 80%;
-  line-height: 1.4;
-}
-
-
-/* Поле ввода сообщений */
-.chat-input {
-  display: flex;
-  align-items: center;
-  padding: 16px; /* Отступы вокруг поля */
-  border-top: 1px solid #ddd;
-  width: 100%;
-  box-sizing: border-box; /* Учитываем отступы в общей ширине */
-}
-
-
-.chat-input-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background-color: #fff;
-  padding: 8px;
-  border-radius: 12px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.chat-input-textarea {
-  flex: 1;
-  background-color: #fff;
-  border: none;
-  outline: none;
-  resize: none;
-  height: 50px; /* Высота текстового поля */
-  padding: 0 12px; /* Убираем верхний/нижний padding для точного выравнивания */
-  font-size: 14px;
-  border-radius: 8px;
-  color: #333;
-  line-height: 50px; /* Высота строки равна высоте поля для центрирования текста */
-  vertical-align: middle; /* Центрирование текста по вертикали */
-}
-
-
-.chat-input-textarea::placeholder {
-  color: #aaa;
-}
-
-.send-button {
-  margin-left: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.send-button img {
-  width: 24px;
-  height: 24px;
-}
-
-/* Контейнер поля ввода */
-.input-container {
-  display: flex;
-  align-items: center;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 66px; /* Задать фиксированную высоту */
-  width: 100%; /* Растянуть по ширине */
-}
-
-/* Кнопка отправки */
-.send-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-}
-
-.chat-header {
-   display: flex;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #ddd;
-  background-color: #615EF0;
-  width: 100%; /* Занимает всю ширину контейнера */
-  box-sizing: border-box; /* Учитывает padding и border */
-}
-
-.chat-header-icon {
-  width: 40px;
-  height: 40px;
-  margin-right: 12px;
-}
-
-.chat-header-title {
-  font-size: 18px;
-  font-weight: 500;
-  color:#F8F8F8;
-}
-
-
-
-.chat-input-textarea .nextui-textarea {
-  border: none; /* Убираем обводку */
-  box-shadow: none; /* Убираем тень, если она есть */
-  outline: none; /* Убираем фокусное выделение */
-}
-
-.chat-input-textarea .nextui-textarea:hover,
-.chat-input-textarea .nextui-textarea:focus {
-  border: none; /* Убираем обводку при наведении и фокусе */
-  box-shadow: none;
-}
-
-.message-input {
-  border: none; /* Убираем стандартную обводку */
-  box-shadow: none; /* Убираем тень */
-  outline: none; /* Убираем выделение при фокусе */
-  resize: none; /* Отключаем изменение размера */
-  height: 66px; /* Устанавливаем фиксированную высоту */
-  padding: 10px; /* Добавляем отступы для удобного ввода */
-  font-size: 16px; /* Настраиваем размер текста */
-}
-
-.message-input:focus {
-  outline: none; /* Убираем фокусное выделение */
-}
-
-.bot-icon {
-  width: 32px; /* Размер иконки */
-  height: 32px;
-  border-radius: 50%; /* Круглая форма */
-  background-color: #fff4cc; /* Светлый фон для иконки */
-  padding: 8px; /* Внутренний отступ */
-}
-
-.message-content {
-  display: flex;
-  align-items: center;
-  gap: 12px; /* Расстояние между иконкой и текстом */
-  background-color: #f9f9f9; /* Светлый фон сообщения */
-  border-radius: 12px; /* Скругленные углы */
-  padding: 12px 16px; /* Отступы внутри контейнера */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легкая тень */
-  max-width: 70%; /* Максимальная ширина текста */
-}
-
-.message-container {
-  display: flex;
-  align-items: center; /* Выравниваем по вертикали */
-  gap: 12px; /* Расстояние между иконкой и текстом */
-}
-
-.message {
-  display: flex;
-  align-items: flex-start; /* Выравниваем сообщения сверху */
-  gap: 12px; /* Расстояние между сообщением и иконкой */
-  background-color: transparent; /* Убираем фон у общего контейнера */
-}
-
-/* Проблема со стилем таблицы из-за этих стилей */
-
-.bg-default-100 {
-  background: #FFFFFF;
-  border-radius: 8px; /* Закругление углов */
-  border: 1px solid #9CA3AF; /* Обводка */
-}
-
-.border-default-200
-{
- background: #FFFFFF;
-  border-radius: 8px; /* Закругление углов */
-  border: 1px solid #9CA3AF; /* Обводка */
+  .border-default-200 {
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: 1px solid #9CA3AF;
+  }
 }

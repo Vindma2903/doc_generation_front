@@ -6,8 +6,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from "@nextui-org/react";
-import ProjectDrop from "@/shared/ui/common/project-drop"; // Импортируем ProjectDrop
+} from "@heroui/react";
+import ProjectDrop from "@/shared/ui/common/project-drop.tsx"; // Импортируем ProjectDrop
 
 type UniversalTableProps<T> = {
   columns: Array<{ name: string; uid: keyof T | string; sortable?: boolean }>;

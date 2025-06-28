@@ -1,11 +1,11 @@
-import { nextui } from "@nextui-org/theme";
+import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html", // Основной файл HTML
     "./src/**/*.{js,ts,jsx,tsx,mdx}", // Все файлы в папке src
-    "./node_modules/@nextui-org/theme/dist/**/*.js", // Стили NextUI
+    "./node_modules/@heroui/theme/dist/**/*.js", // Стили NextUI
   ],
   theme: {
     extend: {
@@ -36,7 +36,7 @@ export default {
   },
   darkMode: "class", // Поддержка тёмной темы через класс
   plugins: [
-    nextui({
+    heroui({
       addCommonColors: true, // Добавляет стандартные цвета NextUI
       layout: {
         disabledOpacity: "0.3",

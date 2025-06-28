@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card } from "@nextui-org/react";
+import { Button, Card } from "@heroui/react";
 import PopUp from "@/shared/ui/common/pop-up"; // Импортируем компонент модального окна
 
 export const MainCards: React.FC = () => {

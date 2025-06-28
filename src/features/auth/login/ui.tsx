@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Form, Link } from "@nextui-org/react";
-import { Input } from "@/shared/ui/common/input";
+import { Form } from "@heroui/react";
+import { Button } from "@/shared/ui/common/global/btn";
+import { Input } from "@/shared/ui/common/global/input";
 import { InputPassword } from "@/shared/ui/common/input-password";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext";
-
+import "@/shared/styles/globals.css";
 
 interface LoginFormValues {
   email: string;
@@ -27,8 +28,8 @@ export const LoginForm = () => {
   });
 
   const { setUser } = useAuth();
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
@@ -42,24 +43,16 @@ export const LoginForm = () => {
       );
 
       const { token } = response.data;
-
-      // Сохраняем токен
       localStorage.setItem("access_token", token);
-
-      // Устанавливаем заголовок для будущих запросов
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      // Получаем текущего пользователя через /me
       const meRes = await axios.get("http://localhost:8080/me");
       setUser(meRes.data);
 
       navigate("/home");
       setError(null);
     } catch (err: any) {
-      console.error(
-        "Ошибка при авторизации:",
-        err.response?.data?.error || err.message
-      );
+      console.error("Ошибка при авторизации:", err.response?.data?.error || err.message);
       setError(
         err.response?.data?.error || "Ошибка авторизации. Проверьте введённые данные."
       );
@@ -67,74 +60,71 @@ export const LoginForm = () => {
   };
 
   return (
-    <Form
-      className="login-form w-full flex flex-col gap-5"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      {error && <p className="text-red-500 text-center">{error}</p>}
+    <Form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
+      {error && <p className="auth-form__error">{error}</p>}
 
-      <Controller
-        control={control}
-        name="email"
-        render={({ field, fieldState }) => (
-          <Input
-            {...field}
-            isRequired
-            errorMessage={fieldState.error?.message}
-            validationBehavior="aria"
-            isInvalid={fieldState.invalid}
-            label="Email"
-            labelPlacement="outside"
-            placeholder="Введите e-mail"
-            className="login-email w-full"
-          />
-        )}
-        rules={{
-          required: "Это обязательное поле",
-          pattern: {
-            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-            message: "Введите корректный адрес электронной почты",
-          },
-        }}
-      />
+      <div className="auth-form__field">
+        <label htmlFor="email" className="auth-form__label">Email</label>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <Input
+              {...field}
+              id="email"
+              type="text"
+              placeholder="Введите e-mail"
+              isRequired
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
+            />
+          )}
+          rules={{
+            required: "Это обязательное поле",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Введите корректный адрес электронной почты",
+            },
+          }}
+        />
+      </div>
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field, fieldState }) => (
-          <InputPassword
-            {...field}
-            isRequired
-            errorMessage={fieldState.error?.message}
-            validationBehavior="aria"
-            isInvalid={fieldState.invalid}
-            labelPlacement="outside"
-            placeholder="Введите пароль"
-            className="login-password w-full"
-          />
-        )}
-        rules={{
-          required: "Это обязательное поле",
-          minLength: { value: 6, message: "Минимум 6 символов" },
-        }}
-      />
+      <div className="auth-form__field">
+        <label htmlFor="password" className="auth-form__label">Пароль</label>
+        <Controller
+          control={control}
+          name="password"
+          render={({ field, fieldState }) => (
+            <InputPassword
+              {...field}
+              id="password"
+              type="password"
+              placeholder="Введите пароль"
+              isRequired
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
+            />
+          )}
+          rules={{
+            required: "Это обязательное поле",
+            minLength: { value: 6, message: "Минимум 6 символов" },
+          }}
+        />
+      </div>
 
-      <Button
-        className="login-submit w-full text-md font-medium"
-        variant="solid"
-        color="primary"
-        type="submit"
-      >
+      <Button className="auth-form__submit" type="submit">
         Войти
       </Button>
 
-      <div className="w-full flex justify-center mt-4">
-        <span className="flex gap-1">
-          <p>Нет аккаунта?</p>
-          <Link className="font-medium #615ef0" href="/register">
+      <div className="auth-form__footer">
+        <p>
+          Нет аккаунта?{" "}
+          <a className="auth-form__link" href="/register">
             Создать аккаунт
-          </Link>
-        </span>
+          </a>
+        </p>
       </div>
     </Form>
   );

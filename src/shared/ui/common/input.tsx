@@ -1,4 +1,4 @@
-import { Input as NextInput, InputProps } from "@nextui-org/react"
+import { Input as NextInput, InputProps } from "@heroui/react"
 
 export const Input = ({ className, ...props }: InputProps) => {
   return (

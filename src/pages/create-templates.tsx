@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { MainSidebar } from "@/shared/ui/common/main-sidebar";
-import "@/shared/styles/home.css";
 import "@/shared/styles/globals.css";
 import axios from "axios";
 import { getUserIdFromToken } from "@/features/auth/AuthContext";

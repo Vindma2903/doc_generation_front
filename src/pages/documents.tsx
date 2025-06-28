@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { MainSidebar } from "@/shared/ui/common/main-sidebar"
 import { useAuth } from "@/features/auth/AuthContext"
-import "@/shared/styles/home.css"
 import "@/shared/styles/globals.css"
 
 type Document = {

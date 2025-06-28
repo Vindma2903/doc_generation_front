@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "@nextui-org/react";
+import { Button, Card } from "@heroui/react";
 
 export const SmallCards: React.FC = () => {
   return (

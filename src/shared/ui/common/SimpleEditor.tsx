@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { useEditor, EditorContent, EditorContext } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -25,6 +25,8 @@ import { SizeTextSelector } from "@/shared/ui/common/document/size-txt"
 import { SelectFontFamily } from "@/shared/ui/common/document/select-font"
 import { useTemplateStyles } from "@/shared/ui/common/document/style-txt"
 import { StyleMark } from "@/shared/extensions/StyleMark"
+import { LineRuler } from "@/shared/ui/common/document/line-txt"
+import { IndentedParagraph } from "@/shared/extensions/IndentedParagraph"
 
 import "@/shared/styles/document.css"
 
@@ -43,7 +45,6 @@ type Props = {
   documentName: string
 }
 
-// ✅ Расширяем TextStyle для поддержки style=""
 const ExtendedTextStyle = TextStyle.extend({
   addAttributes() {
     return {
@@ -56,13 +57,11 @@ const ExtendedTextStyle = TextStyle.extend({
   },
 })
 
-// 🔁 Подставляем стили в HTML по data-style-id
 function applyInlineStylesFromDB(html: string, styles: TemplateStyle[]) {
   let updatedHtml = html
 
   styles.forEach(style => {
     if (style.scope !== "inline") return
-
     const match = style.selector.match(/data-style-id="(.+?)"/)
     if (!match) return
     const styleId = match[1]
@@ -71,25 +70,35 @@ function applyInlineStylesFromDB(html: string, styles: TemplateStyle[]) {
       .map(([k, v]) => `${k}: ${v}`)
       .join("; ")
 
-    const regex = new RegExp(`(<span[^>]*data-style-id="${styleId}"[^>]*)(>)`, "g")
+    const regex = new RegExp(
+      `(<span[^>]*data-style-id="${styleId}"(?![^>]*style=)[^>]*)(>)`,
+      "g"
+    )
+
     updatedHtml = updatedHtml.replace(regex, `$1 style="${styleStr}"$2`)
   })
 
   return updatedHtml
 }
 
+// ...все импорты остаются без изменений
+
 export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
   const [lastFontSize, setLastFontSize] = useState("12px")
   const [templateStyles, setTemplateStyles] = useState<TemplateStyle[]>([])
   const [initialContentLoaded, setInitialContentLoaded] = useState(false)
+  const hasSetContent = useRef(false)
 
-  // 🧩 Конфигурируем StyleMark до useEditor
   const configuredStyleMark = StyleMark.configure({ editor: null })
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ heading: { levels: [1, 2, 3, 4, 5, 6] }, bulletList: false, orderedList: false, listItem: false }),
+      StarterKit.configure({
+        heading: { levels: [1, 2, 3, 4, 5, 6] },
+        paragraph: false,
+      }),
+      IndentedParagraph,
       BulletList.configure({ keepMarks: true }),
       OrderedList,
       ListItem,
@@ -102,10 +111,15 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
       ExtendedTextStyle,
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
-      configuredStyleMark, // ✅ Используем локальную переменную
+      configuredStyleMark,
     ],
     content,
     onUpdate({ editor }) {
+      if (hasSetContent.current) {
+        hasSetContent.current = false
+        return
+      }
+
       const html = editor.getHTML()
       onChange(html)
 
@@ -113,17 +127,15 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
         id: documentId,
         content: html,
       }).catch(err => console.error("❌ Ошибка обновления контента:", err))
-    },
+    }
   })
 
-  // ⛓ Привязка editor к StyleMark после инициализации
   useEffect(() => {
     if (editor && !configuredStyleMark.options.editor) {
       configuredStyleMark.options.editor = editor
     }
   }, [editor])
 
-  // 🎯 Загружаем стили и применяем к контенту
   useTemplateStyles(
     editor,
     documentId,
@@ -134,11 +146,24 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
     setInitialContentLoaded
   )
 
+  // 👉 Добавленный useEffect: вызов автоназначения style_id
   useEffect(() => {
-    if (editor && initialContentLoaded) {
+    axios.post("http://localhost:8080/tags/auto-assign-style-ids")
+      .then(() => {
+        console.log("✅ style_id автоназначены")
+      })
+      .catch(err => {
+        console.error("❌ Ошибка при автоназначении style_id:", err)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (editor && initialContentLoaded && !hasSetContent.current) {
       const styledHtml = applyInlineStylesFromDB(content, templateStyles)
       if (styledHtml !== editor.getHTML()) {
+        hasSetContent.current = true
         editor.commands.setContent(styledHtml, false)
+        setTimeout(() => { hasSetContent.current = false }, 50)
       }
     }
   }, [initialContentLoaded, templateStyles])
@@ -169,13 +194,13 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
               documentId={documentId}
               setStyles={setTemplateStyles}
             />
-            {formatButton(<img src="/document/Bold.svg" alt="Bold" />, () => editor.chain().focus().toggleBold().run(), "Bold")}
-            {formatButton(<img src="/Italic.svg" alt="Italic" />, () => editor.chain().focus().toggleItalic().run(), "Italic")}
-            {formatButton(<img src="/underline-icon.svg" alt="Underline" />, () => editor.chain().focus().toggleUnderline().run(), "Underline")}
+            {formatButton(<img src="/document/Bold.svg" alt="Bold" />, () => editor.chain().focus().toggleBold().run())}
+            {formatButton(<img src="/Italic.svg" alt="Italic" />, () => editor.chain().focus().toggleItalic().run())}
+            {formatButton(<img src="/underline-icon.svg" alt="Underline" />, () => editor.chain().focus().toggleUnderline().run())}
             {formatButton(<img src="/document/paperclip.svg" alt="Insert link" />, () => {
               const url = prompt("Введите URL")
               if (url) editor.chain().focus().setLink({ href: url }).run()
-            }, "Insert link")}
+            })}
             <div className="dropdown">
               <button type="button" onMouseDown={(e) => { e.preventDefault(); setDropdownOpen(prev => !prev) }}>
                 <img src="/align-left.svg" alt="Align" />
@@ -189,11 +214,12 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
                 </div>
               )}
             </div>
-            {formatButton("S", () => editor.chain().focus().toggleStrike().run(), "Strikethrough")}
-            {formatButton("</>", () => editor.chain().focus().toggleCode().run(), "Code")}
-            {formatButton("x²", () => editor.chain().focus().toggleSuperscript().run(), "Superscript")}
-            {formatButton("x₂", () => editor.chain().focus().toggleSubscript().run(), "Subscript")}
+            {formatButton("S", () => editor.chain().focus().toggleStrike().run())}
+            {formatButton("</>", () => editor.chain().focus().toggleCode().run())}
+            {formatButton("x²", () => editor.chain().focus().toggleSuperscript().run())}
+            {formatButton("x₂", () => editor.chain().focus().toggleSubscript().run())}
           </div>
+          <LineRuler editor={editor} />
           <div className="editor-workspace">
             <div className="page">
               <EditorContent editor={editor} className="editor-document editor-content" />
