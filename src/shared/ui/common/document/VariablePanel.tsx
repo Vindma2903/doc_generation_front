@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
+import { Button } from "@/shared/ui/common/global/btn"
+import "@/shared/styles/globals.css"
 
 type Tag = {
   id: number
   name: string
   label: string
   description?: string
-  type?: string // ← добавлено поле type (если оно необязательное)
+  type?: string
 }
 
 type Props = {
@@ -51,11 +53,11 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
       return
     }
 
-    const cleanTagName = rawTag.replace(/{{\s*|\s*}}/g, "") // убираем {{ }}
+    const cleanTagName = rawTag.replace(/{{\s*|\s*}}/g, "")
 
     try {
       const response = await axios.post("http://localhost:8080/tags/create", {
-        name: cleanTagName, // 👈 БЕЗ скобок в БД
+        name: cleanTagName,
         label,
         description: newFieldType === "text" ? "Свободный текст" : "Варианты ответов",
         type: newFieldType
@@ -63,8 +65,6 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
 
       const createdTag = response.data
       setTags(prev => [...prev, createdTag])
-
-      // 👇 вставляем с {{}} на фронте
       onInsert(`{{${createdTag.name}}}`)
 
       setShowModal(false)
@@ -76,7 +76,6 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
       alert("Ошибка при создании тега")
     }
   }
-
 
   const getReadableType = (type?: string) => {
     switch (type) {
@@ -112,7 +111,7 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
           >
             <span className="drag-icon">≡</span>
             {`{{${tag.name}}}`}
-            <span style={{ marginLeft: "8px", fontSize: "12px", color: "#888" }}>
+            <span className="variable-type-label">
               [{getReadableType(tag.type)}]
             </span>
           </button>
@@ -121,27 +120,18 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
         <div className="no-results">Ничего не найдено</div>
       )}
 
-      <div style={{ marginTop: "16px", textAlign: "center" }}>
-        <button
-          className="add-variable-button"
-          onClick={handleAddField}
-          style={{
-            padding: "8px 12px",
-            borderRadius: "6px",
-            backgroundColor: "#615EF0",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "14px"
-          }}
-        >
-          ➕ Добавить поле
-        </button>
+      <div className="variable-panel-footer">
+        <Button onClick={handleAddField} className="bg-primary small flex items-center gap-2">
+          <img src="/plus.svg" alt="+" className="w-4 h-4 filter invert" />
+          Добавить поле
+        </Button>
       </div>
 
+
+
       {showModal && (
-        <div style={modalOverlay}>
-          <div style={modalBox}>
+        <div className="modal-overlay">
+          <div className="modal-box">
             <h3>Добавить новое поле</h3>
 
             <label>
@@ -149,82 +139,46 @@ export const VariablePanel: React.FC<Props> = ({ onInsert }) => {
               <select
                 value={newFieldType}
                 onChange={(e) => setNewFieldType(e.target.value)}
-                style={selectStyle}
+                className="modal-select"
               >
                 <option value="text">Свободный текст</option>
                 <option value="select">Варианты ответов</option>
               </select>
             </label>
 
-            <label style={{ marginTop: "10px" }}>
+            <label>
               Название:
               <input
                 type="text"
                 value={newFieldName}
                 onChange={(e) => setNewFieldName(e.target.value)}
                 placeholder="Введите название"
-                style={inputStyle}
+                className="modal-input"
               />
             </label>
 
-            <label style={{ marginTop: "10px" }}>
+            <label>
               Тег для заполнения:
               <input
                 type="text"
                 value={newFieldTag}
                 onChange={(e) => setNewFieldTag(e.target.value)}
                 placeholder="Например {{фио_сотрудника}}"
-                style={inputStyle}
+                className="modal-input"
               />
             </label>
 
-            <div style={{ marginTop: "20px", display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-              <button onClick={() => setShowModal(false)}>Отмена</button>
-              <button onClick={handleModalSubmit} style={{ backgroundColor: "#615EF0", color: "#fff" }}>
-                Добавить
+            <div className="modal-footer">
+              <button onClick={() => setShowModal(false)} className="modal-button-cancel">
+                Отмена
               </button>
+              <Button onClick={handleModalSubmit} className="modal-button-submit">
+                Добавить
+              </Button>
             </div>
           </div>
         </div>
       )}
     </div>
   )
-}
-
-// ===== Стили =====
-const modalOverlay: React.CSSProperties = {
-  position: "fixed",
-  top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.4)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1000
-}
-
-const modalBox: React.CSSProperties = {
-  backgroundColor: "#fff",
-  padding: "20px",
-  borderRadius: "8px",
-  width: "300px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
-}
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "6px",
-  marginTop: "4px",
-  fontSize: "14px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  boxSizing: "border-box"
-}
-
-const selectStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "6px",
-  marginTop: "4px",
-  fontSize: "14px",
-  borderRadius: "4px",
-  border: "1px solid #ccc"
 }

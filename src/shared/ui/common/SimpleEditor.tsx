@@ -81,8 +81,6 @@ function applyInlineStylesFromDB(html: string, styles: TemplateStyle[]) {
   return updatedHtml
 }
 
-// ...все импорты остаются без изменений
-
 export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
   const [lastFontSize, setLastFontSize] = useState("12px")
@@ -207,10 +205,43 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
               </button>
               {isDropdownOpen && (
                 <div className="dropdown-content horizontal">
-                  <TextAlignButton editor={editor} align="left" onClick={() => setDropdownOpen(false)}><img src="/align-left.svg" /></TextAlignButton>
-                  <TextAlignButton editor={editor} align="center" onClick={() => setDropdownOpen(false)}><img src="/align-center.svg" /></TextAlignButton>
-                  <TextAlignButton editor={editor} align="right" onClick={() => setDropdownOpen(false)}><img src="/align-right.svg" /></TextAlignButton>
-                  <TextAlignButton editor={editor} align="justify" onClick={() => setDropdownOpen(false)}><img src="/justify.svg" /></TextAlignButton>
+                  <TextAlignButton editor={editor} align="left" onClick={() => setDropdownOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 6H15" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 12H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 18H17" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </TextAlignButton>
+
+                  <TextAlignButton editor={editor} align="center" onClick={() => setDropdownOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 6H18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M4 12H20" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M6 18H18" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </TextAlignButton>
+
+                  <TextAlignButton editor={editor} align="right" onClick={() => setDropdownOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 6H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 12H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M7 18H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </TextAlignButton>
+
+                  <TextAlignButton editor={editor} align="justify" onClick={() => setDropdownOpen(false)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 6H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 12H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 18H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </TextAlignButton>
+
+
                 </div>
               )}
             </div>

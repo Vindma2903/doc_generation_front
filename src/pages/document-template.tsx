@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MainSidebar } from "@/shared/ui/common/main-sidebar";
 import "@/shared/styles/globals.css";
-import "@/shared/styles/document.css";
 import axios from "axios";
-import { getUserIdFromToken } from "@/features/auth/AuthContext"; // путь адаптируй под себя
-
+import { getUserIdFromToken } from "@/features/auth/AuthContext";
+import { DataTable } from "@/shared/ui/common/global/table";
+import { SortDescriptor } from "@heroui/react";
 
 interface Template {
   id: number;
@@ -30,6 +30,11 @@ const formatDateTime = (iso: string) => {
 
 const DocumentTemplatePage: React.FC = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "",
+    direction: "ascending",
+  });
   const [showModal, setShowModal] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const navigate = useNavigate();
@@ -62,9 +67,7 @@ const DocumentTemplatePage: React.FC = () => {
       });
 
       const newTemplateId = response.data?.id;
-      if (!newTemplateId) {
-        throw new Error("Сервер не вернул ID нового шаблона");
-      }
+      if (!newTemplateId) throw new Error("Сервер не вернул ID нового шаблона");
 
       setShowModal(false);
       navigate(`/edit-template/${newTemplateId}`);
@@ -74,157 +77,117 @@ const DocumentTemplatePage: React.FC = () => {
     }
   };
 
+  const columns = [
+    { name: "Название шаблона", uid: "name", sortable: true },
+    { name: "Создатель", uid: "creator" },
+    { name: "Дата и время создания", uid: "created_at", sortable: true },
+    { name: "Действия", uid: "actions", align: "center" },
+  ];
+
+  const filteredTemplates = templates.filter((t) =>
+    t.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
+    const { column, direction } = sortDescriptor;
+    if (!column) return 0;
+
+    let aValue = a[column as keyof Template];
+    let bValue = b[column as keyof Template];
+
+    if (column === "created_at") {
+      aValue = new Date(aValue as string).getTime();
+      bValue = new Date(bValue as string).getTime();
+    }
+
+    const compare =
+      typeof aValue === "number" && typeof bValue === "number"
+        ? aValue - bValue
+        : String(aValue).localeCompare(String(bValue));
+
+    return direction === "descending" ? -compare : compare;
+  });
+
+  const renderCell = (template: Template, columnKey: string) => {
+    switch (columnKey) {
+      case "name":
+        return template.name;
+      case "creator":
+        return `${template.creator.first_name} ${template.creator.last_name}`;
+      case "created_at":
+        return formatDateTime(template.created_at);
+      case "actions":
+        return (
+          <button
+            className="row-action"
+            title="Действия"
+            onClick={(e) => e.stopPropagation()}
+          >
+            ⋮
+          </button>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="home-container">
       <MainSidebar />
 
-      <main className="content" style={{ padding: "24px" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}>
-          Шаблоны документов
-        </h1>
+      <main className="content document-template">
+        <h1 className="page-title">Шаблоны документов</h1>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "24px" }}>
-          <button
-            onClick={() => setShowModal(true)}
-            style={{
-              backgroundColor: "#615EF0",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              padding: "10px 16px",
-              fontSize: "14px",
-              fontWeight: "500",
-              cursor: "pointer",
-            }}
-          >
+        <div className="template-actions">
+          <div className="search-wrapper">
+            <input
+              type="text"
+              placeholder="Поиск по названию"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="template-search"
+            />
+            <img src="/search.svg" alt="Поиск" className="search-icon" />
+          </div>
+
+          <button className="create-button" onClick={() => setShowModal(true)}>
             Создать шаблон
           </button>
         </div>
 
-        {/* Таблица */}
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-          <tr style={{ backgroundColor: "#f5f5f5" }}>
-            <th style={cellStyle}>Название шаблона</th>
-            <th style={cellStyle}>Создатель</th>
-            <th style={cellStyle}>Дата и время создания</th>
-            <th style={cellStyle}>Действия</th>
-          </tr>
-          </thead>
-          <tbody>
-          {templates.map((template) => (
-            <tr
-              key={template.id}
-              className="template-row"
-              onClick={() => navigate(`/edit-template/${template.id}`)}
-            >
-              <td style={cellStyle}>{template.name}</td>
-              <td style={cellStyle}>
-                {template.creator.first_name} {template.creator.last_name}
-              </td>
-              <td style={cellStyle}>{formatDateTime(template.created_at)}</td>
-              <td style={cellStyle}>
-                <button
-                  title="Действия"
-                  onClick={(e) => e.stopPropagation()} // чтобы клик по кнопке не срабатывал на всю строку
-                  style={{
-                    background: "none",
-                    border: "none",
-                    fontSize: "20px",
-                    cursor: "pointer",
-                  }}
-                >
-                  ⋮
-                </button>
-              </td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
+        <DataTable
+          columns={columns}
+          items={sortedTemplates}
+          renderCell={renderCell}
+          onRowClick={(template) => navigate(`/edit-template/${template.id}`)}
+          sortDescriptor={sortDescriptor}
+          onSortChange={setSortDescriptor}
+        />
 
-        {/* Модальное окно */}
         {showModal && (
-          <div style={modalOverlay}>
-            <div style={modalContent}>
-              <h2 style={{ marginBottom: "12px", fontSize: "18px" }}>Создать шаблон</h2>
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Создать шаблон</h2>
               <input
                 type="text"
                 value={templateName}
                 onChange={(e) => setTemplateName(e.target.value)}
                 placeholder="Название шаблона"
-                style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  marginBottom: "16px",
-                  fontSize: "14px",
-                  border: "1px solid #E4E4E7",
-                  borderRadius: "4px",
-                  boxSizing: "border-box",
-                }}
               />
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                <button
-                  onClick={() => setShowModal(false)}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#fff",
-                    border: "1px solid #E4E4E7",
-                    borderRadius: "4px",
-                    color: "#333",
-                    fontWeight: 500,
-                    cursor: "pointer",
-                  }}
-                >
+              <div className="modal-actions">
+                <button className="cancel-button" onClick={() => setShowModal(false)}>
                   Отмена
                 </button>
-                <button
-                  onClick={handleCreateTemplate}
-                  style={{
-                    backgroundColor: "#615EF0",
-                    color: "white",
-                    padding: "8px 16px",
-                    border: "none",
-                    borderRadius: "4px",
-                    fontWeight: 500,
-                    cursor: "pointer",
-                  }}
-                >
+                <button className="confirm-button" onClick={handleCreateTemplate}>
                   Создать
                 </button>
               </div>
             </div>
           </div>
         )}
-
       </main>
     </div>
   );
-};
-
-const cellStyle: React.CSSProperties = {
-  padding: "12px",
-  textAlign: "left",
-};
-
-const modalOverlay: React.CSSProperties = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100vw",
-  height: "100vh",
-  backgroundColor: "rgba(0,0,0,0.5)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1000,
-};
-
-const modalContent: React.CSSProperties = {
-  backgroundColor: "white",
-  padding: "24px",
-  borderRadius: "8px",
-  width: "400px",
 };
 
 export default DocumentTemplatePage;

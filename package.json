@@ -13,7 +13,7 @@
       "@floating-ui/react": "^0.27.12",
       "@heroui/react": "^2.7.11",
       "@heroui/system": "2.4.18",
-      "@heroui/table": "2.2.21",
+      "@heroui/table": "^2.2.21",
       "@heroui/theme": "2.4.17",
       "@nextui-org/react": "^2.6.11",
       "@react-types/shared": "3.26.0",

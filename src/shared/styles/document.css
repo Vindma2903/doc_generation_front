@@ -118,7 +118,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 16px;
-    gap: 12px;
+    gap: 496px;
 }
 
 .edit-template-back-button {
@@ -508,16 +508,7 @@
     margin-top: 24px;
 }
 
-/* Кнопка "Создать" (примерно, можно адаптировать под существующий стиль) */
-.create-button {
-    padding: 8px 16px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-}
+
 
 /* Кнопка "Отмена" */
 .cancel-button {
@@ -538,7 +529,6 @@
 
 .variable-panel {
     width: 280px;
-    border-left: 1px solid #e0e0e0;
     padding: 24px;
     display: flex;
     flex-direction: column;
