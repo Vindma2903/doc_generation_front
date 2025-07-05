@@ -13,6 +13,7 @@ import Link from "@tiptap/extension-link"
 import BulletList from "@tiptap/extension-bullet-list"
 import OrderedList from "@tiptap/extension-ordered-list"
 import ListItem from "@tiptap/extension-list-item"
+import Color from "@tiptap/extension-color"
 import axios from "axios"
 
 import { UndoRedoButton } from "@/shared/ui/common/document/undo-redo-button"
@@ -27,6 +28,7 @@ import { StyleMark } from "@/shared/extensions/StyleMark"
 import { LineRuler } from "@/shared/ui/common/document/line-txt"
 import { IndentedParagraph } from "@/shared/extensions/IndentedParagraph"
 import { AlignTextDropdown } from "@/shared/ui/common/document/align-txt"
+import { ColorTextPicker } from "@/shared/ui/common/document/color-txt"
 
 import "@/shared/styles/document.css"
 
@@ -96,9 +98,7 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
         paragraph: false,
       }),
       IndentedParagraph,
-      TextAlign.configure({
-        types: ["heading", "paragraph"], // 👈 обязательно указываем кастомный абзац
-      }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       BulletList.configure({ keepMarks: true }),
       OrderedList,
       ListItem,
@@ -108,6 +108,7 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
       Typography,
       Image,
       ExtendedTextStyle,
+      Color.configure({ types: ['textStyle'] }),
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       configuredStyleMark,
@@ -195,6 +196,7 @@ export const SimpleEditor: React.FC<Props> = ({ content, onChange, documentId })
             {formatButton(<img src="/document/Bold.svg" alt="Bold" />, () => editor.chain().focus().toggleBold().run())}
             {formatButton(<img src="/Italic.svg" alt="Italic" />, () => editor.chain().focus().toggleItalic().run())}
             {formatButton(<img src="/underline-icon.svg" alt="Underline" />, () => editor.chain().focus().toggleUnderline().run())}
+            <ColorTextPicker editor={editor} />
             {formatButton(<img src="/document/paperclip.svg" alt="Insert link" />, () => {
               const url = prompt("Введите URL")
               if (url) editor.chain().focus().setLink({ href: url }).run()

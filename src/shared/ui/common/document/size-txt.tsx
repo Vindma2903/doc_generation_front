@@ -28,7 +28,6 @@ export const SizeTextSelector: React.FC<SizeTextSelectorProps> = ({
     "24px", "28px", "32px", "36px", "48px", "72px"
   ]
 
-  // Чтение текущего font-size из styleMark
   const currentFontSize = (() => {
     const styleAttr = editor.getAttributes("styleMark")?.style
     const style = typeof styleAttr === "string" ? styleAttr : ""
@@ -44,6 +43,7 @@ export const SizeTextSelector: React.FC<SizeTextSelectorProps> = ({
     setLastFontSize(size)
 
     const styleObj = { "font-size": size }
+
     const selectedMark = editor.getAttributes("styleMark")
     const currentStyleStr = selectedMark?.style ?? ""
 
@@ -52,12 +52,15 @@ export const SizeTextSelector: React.FC<SizeTextSelectorProps> = ({
     let styleId = selectedMark?.styleId || crypto.randomUUID()
     let selector = `span[data-style-id="${styleId}"]`
 
+    const fontSizePt = parseInt(size.replace("px", ""), 10)  // ✅ просто число без * 0.75
+
     try {
       const response = await axios.post("http://localhost:8080/templates/styles", {
         template_id: documentId,
         selector,
         styles: styleObj,
         scope: "inline",
+        font_size_pt: fontSizePt, // 👈 остаётся!
       })
 
       if (response.data?.selector) {
@@ -95,6 +98,7 @@ export const SizeTextSelector: React.FC<SizeTextSelectorProps> = ({
       style: styleStr,
     }).run()
   }
+
 
   return (
     <select value={currentFontSize} onChange={handleChange}>

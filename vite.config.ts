@@ -6,6 +6,9 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   server: {
-    port: 3000, // Укажите желаемый порт
+    port: 3000,
+  },
+  optimizeDeps: {
+    include: ['pdfjs-dist/build/pdf.worker.entry'],
   },
 })
