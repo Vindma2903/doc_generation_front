@@ -33,6 +33,26 @@ const MainSidebarComponent: React.FC = () => {
             <img src="/document/document.svg" alt="Документы" className="menu-icon icon" />
             Документы
           </Link>
+
+          <Link
+            to="/counterparties"
+            className={`menu-link subtitle ${isActive("/counterparties") ? "active" : ""}`}
+          >
+            <img src="public/partner.svg" alt="Контрагенты" className="menu-icon icon" />
+            Контрагенты
+          </Link>
+
+          {/* 👇 Добавлено: Добавление пользователей */}
+          <Link
+            to="/user-page"
+            className={`menu-link subtitle ${isActive("/user-page") ? "active" : ""}`}
+          >
+            <img src="/users.svg" alt="Пользователи" className="menu-icon icon" />
+            Пользователи
+          </Link>
+
+
+
         </nav>
 
         <UserProfile />

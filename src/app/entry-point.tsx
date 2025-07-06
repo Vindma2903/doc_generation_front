@@ -25,6 +25,9 @@ import EditTemplatePage from "@/pages/EditTemplatePage"; // добавь в им
 import { TagPage } from "@/pages/tag-page"
 import { DocumentsPage } from "@/pages/documents"; // путь подкорректируй под свою структуру
 import FillTemplatePage from "@/pages/FillTemplatePage"
+import AddUserPage from "@/pages/user-page.tsx"; // Добавление пользователей
+import CounterpartiesPage from "@/pages/counterparties"; // Контрагенты
+
 
 
 
@@ -52,6 +55,9 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/tags" element={<TagPage />} />
         <Route element={<DocumentsPage />} path="/documents" />
         <Route path="/documents/fill/:id" element={<FillTemplatePage />} />
+        <Route path="/user-page" element={<AddUserPage />} />
+        <Route path="/counterparties" element={<CounterpartiesPage />} />
+
 
 
 
