@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Skeleton } from "@/shared/ui/common/auth/Skeleton";
 import { Card, CardContent } from "@/shared/ui/common/auth/Card";
 import { Loader2 } from "lucide-react";
-
 
 // Интерфейс пользователя
 interface User {
@@ -49,6 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkAuth = async () => {
     try {
@@ -92,15 +92,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // При загрузке страницы — проверка токена
   useEffect(() => {
     checkAuth();
   }, []);
 
+  // Защита маршрутов — только если не на публичной странице
   useEffect(() => {
-    if (!loading && !user) {
+    const publicPaths = ["/login", "/register", "/forgot-password", "/confirm-register", "/set-password"];
+    const isPublic = publicPaths.includes(location.pathname);
+
+    if (!loading && !user && !isPublic) {
       navigate("/login");
     }
-  }, [loading, user, navigate]);
+  }, [loading, user, navigate, location]);
 
   return (
     <AuthContext.Provider value={{ user, loading, setUser, checkAuth }}>

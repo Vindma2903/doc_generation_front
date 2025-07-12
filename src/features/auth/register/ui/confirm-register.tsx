@@ -1,5 +1,4 @@
-import React from "react";
-import "@/shared/styles/globals.css"; // Подключаем глобальные стили
+import "@/shared/styles/globals.css" // Подключаем глобальные стили
 
 export const ConfirmRegister = () => {
   return (
@@ -9,8 +8,7 @@ export const ConfirmRegister = () => {
           Подтверждение регистрации
         </h1>
         <p className="confirm-text text-gray-600">
-          Вашему руководителю отправлено уведомление, пожалуйста, ожидайте
-          подтверждения вашей регистрации.
+          Вам на почту было отправлено письмо, пожалуйста перейдите по ссылке, чтобы завершить регистрацию.
         </p>
       </div>
     </div>

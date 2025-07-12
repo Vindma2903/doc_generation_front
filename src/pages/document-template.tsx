@@ -14,7 +14,7 @@ interface Template {
   creator: {
     first_name: string;
     last_name: string;
-  };
+  } | null;
 }
 
 const formatDateTime = (iso: string) => {
@@ -43,11 +43,22 @@ const DocumentTemplatePage: React.FC = () => {
     const fetchTemplates = async () => {
       try {
         const response = await axios.get("http://localhost:8080/templates/all");
-        setTemplates(response.data);
+        console.log("Ответ с сервера:", response.data);
+        if (Array.isArray(response.data)) {
+          setTemplates(response.data);
+        } else if (response.data === null) {
+          // Если сервер вернул null, заменяем на пустой массив
+          setTemplates([]);
+        } else {
+          console.error("Некорректный формат данных от сервера");
+          setTemplates([]); // чтобы не было ошибок
+        }
       } catch (error) {
         console.error("Ошибка при загрузке шаблонов:", error);
       }
     };
+
+
 
     fetchTemplates();
   }, []);
@@ -84,9 +95,11 @@ const DocumentTemplatePage: React.FC = () => {
     { name: "Действия", uid: "actions", align: "center" },
   ];
 
-  const filteredTemplates = templates.filter((t) =>
-    t.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTemplates = Array.isArray(templates)
+    ? templates.filter((t) =>
+      t.name?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    : [];
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
     const { column, direction } = sortDescriptor;
@@ -113,7 +126,9 @@ const DocumentTemplatePage: React.FC = () => {
       case "name":
         return template.name;
       case "creator":
-        return `${template.creator.first_name} ${template.creator.last_name}`;
+        return template.creator
+          ? `${template.creator.first_name} ${template.creator.last_name}`
+          : "Неизвестный";
       case "created_at":
         return formatDateTime(template.created_at);
       case "actions":
@@ -175,7 +190,10 @@ const DocumentTemplatePage: React.FC = () => {
                 placeholder="Название шаблона"
               />
               <div className="modal-actions">
-                <button className="cancel-button" onClick={() => setShowModal(false)}>
+                <button
+                  className="cancel-button"
+                  onClick={() => setShowModal(false)}
+                >
                   Отмена
                 </button>
                 <button className="confirm-button" onClick={handleCreateTemplate}>

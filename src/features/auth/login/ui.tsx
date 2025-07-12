@@ -5,7 +5,7 @@ import { Form } from "@heroui/react";
 import { Button } from "@/shared/ui/common/global/btn";
 import { Input } from "@/shared/ui/common/global/input";
 import { InputPassword } from "@/shared/ui/common/input-password";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext";
 import "@/shared/styles/globals.css";
 
@@ -49,8 +49,8 @@ export const LoginForm = () => {
       const meRes = await axios.get("http://localhost:8080/me");
       setUser(meRes.data);
 
-      navigate("/home");
       setError(null);
+      navigate("/home");
     } catch (err: any) {
       console.error("Ошибка при авторизации:", err.response?.data?.error || err.message);
       setError(
@@ -63,6 +63,7 @@ export const LoginForm = () => {
     <Form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
       {error && <p className="auth-form__error">{error}</p>}
 
+      {/* Email */}
       <div className="auth-form__field">
         <label htmlFor="email" className="auth-form__label">Email</label>
         <Controller
@@ -90,6 +91,7 @@ export const LoginForm = () => {
         />
       </div>
 
+      {/* Пароль */}
       <div className="auth-form__field">
         <div className="auth-form__label-row">
           <label htmlFor="password" className="auth-form__label">Пароль</label>
@@ -97,7 +99,6 @@ export const LoginForm = () => {
             Забыли пароль?
           </a>
         </div>
-
         <Controller
           control={control}
           name="password"
@@ -120,17 +121,18 @@ export const LoginForm = () => {
         />
       </div>
 
-
+      {/* Кнопка входа */}
       <Button className="auth-form__submit" type="submit">
         Войти
       </Button>
 
+      {/* Ссылка на регистрацию */}
       <div className="auth-form__footer">
         <p>
           Нет аккаунта?{" "}
-          <a className="auth-form__link" href="/register">
+          <Link className="auth-form__link" to="/register">
             Создать аккаунт
-          </a>
+          </Link>
         </p>
       </div>
     </Form>

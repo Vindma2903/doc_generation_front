@@ -26,7 +26,9 @@ import { TagPage } from "@/pages/tag-page"
 import { DocumentsPage } from "@/pages/documents"; // путь подкорректируй под свою структуру
 import FillTemplatePage from "@/pages/FillTemplatePage"
 import AddUserPage from "@/pages/user-page.tsx"; // Добавление пользователей
-import CounterpartiesPage from "@/pages/counterparties"; // Контрагенты
+import CounterpartiesPage from "@/pages/counterparties";
+import { VerifyPage } from "@/pages/VerifyPage.tsx" // Контрагенты
+import SetPasswordPage from "@/pages/set-password"; // Установка пароля
 
 
 
@@ -57,6 +59,10 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/documents/fill/:id" element={<FillTemplatePage />} />
         <Route path="/user-page" element={<AddUserPage />} />
         <Route path="/counterparties" element={<CounterpartiesPage />} />
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/set-password" element={<SetPasswordPage />} />
+
+
 
 
 

@@ -8,6 +8,7 @@ import {
   Button,
   Input,
 } from "@heroui/react";
+import axios from "axios";
 
 type UserDrawerProps = {
   isOpen: boolean;
@@ -38,10 +39,21 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
     { email: "", firstName: "", lastName: "", middleName: "" },
   ]);
 
+  const [errors, setErrors] = useState<{ [key: number]: { [key: string]: string } }>({});
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (index: number, field: string, value: string) => {
     const updated = [...formFields];
     updated[index][field as keyof typeof updated[0]] = value;
     setFormFields(updated);
+
+    setErrors((prev) => ({
+      ...prev,
+      [index]: {
+        ...prev[index],
+        [field]: "",
+      },
+    }));
   };
 
   const handleAddMore = () => {
@@ -51,10 +63,55 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
     ]);
   };
 
+  const validateFields = () => {
+    const newErrors: typeof errors = {};
+    formFields.forEach((user, index) => {
+      const fieldErrors: { [key: string]: string } = {};
+      if (!user.email.trim()) fieldErrors.email = "Обязательное поле";
+      if (!user.firstName.trim()) fieldErrors.firstName = "Обязательное поле";
+      if (!user.lastName.trim()) fieldErrors.lastName = "Обязательное поле";
+      if (Object.keys(fieldErrors).length > 0) newErrors[index] = fieldErrors;
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateFields()) return;
+
+    try {
+      setLoading(true);
+
+      await Promise.all(
+        formFields.map((user) =>
+          axios.post("http://localhost:8080/invite", {
+            email: user.email,
+            first_name: user.firstName,
+            last_name: user.lastName,
+          })
+        )
+      );
+
+      alert("Приглашения отправлены!");
+      setFormFields([{ email: "", firstName: "", lastName: "", middleName: "" }]);
+      setErrors({});
+      onClose();
+    } catch (err: any) {
+      console.error("Ошибка при отправке:", err);
+      alert(
+        err.response?.data?.error ||
+        "Ошибка при отправке приглашений. Попробуйте позже."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
-      <DrawerContent className="max-w-4xl w-full mx-auto">
-      <DrawerHeader className="text-lg font-semibold">
+      <DrawerContent className="max-w-6xl w-full mx-auto">
+        <DrawerHeader className="text-lg font-semibold">
           Добавление пользователей
         </DrawerHeader>
 
@@ -62,7 +119,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
           {formFields.map((user, index) => (
             <div
               key={index}
-              className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
+              className="grid grid-cols-1 md:grid-cols-4 gap-4"
             >
               <Input
                 label="E-mail"
@@ -74,7 +131,10 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 className="rounded-none"
                 endContent={<MailIcon className="text-xl text-default-400" />}
                 classNames={{ input: "!p-0" }}
+                isInvalid={!!errors[index]?.email}
+                errorMessage={errors[index]?.email}
               />
+
               <Input
                 label="Фамилия"
                 labelPlacement="outside"
@@ -84,7 +144,10 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 variant="bordered"
                 className="rounded-none"
                 classNames={{ input: "!p-0" }}
+                isInvalid={!!errors[index]?.lastName}
+                errorMessage={errors[index]?.lastName}
               />
+
               <Input
                 label="Имя"
                 labelPlacement="outside"
@@ -94,6 +157,8 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 variant="bordered"
                 className="rounded-none"
                 classNames={{ input: "!p-0" }}
+                isInvalid={!!errors[index]?.firstName}
+                errorMessage={errors[index]?.firstName}
               />
 
               <Input
@@ -105,8 +170,9 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 variant="bordered"
                 className="rounded-none"
                 classNames={{ input: "!p-0" }}
+                isInvalid={false}
+                errorMessage=" " // резерв высоты
               />
-
             </div>
           ))}
 
@@ -119,11 +185,6 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
             <img src="/public/plus.svg" alt="+" className="w-4 h-4" />
             Добавить ещё
           </Button>
-
-
-
-
-
         </DrawerBody>
 
         <DrawerFooter className="flex justify-end gap-4">
@@ -137,14 +198,13 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
 
           <Button
             color="primary"
-            onPress={onClose}
+            onPress={handleSubmit}
+            isLoading={loading}
             className="w-full sm:w-[160px]"
           >
             Добавить
           </Button>
         </DrawerFooter>
-
-
       </DrawerContent>
     </Drawer>
   );

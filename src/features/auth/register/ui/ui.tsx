@@ -1,159 +1,156 @@
 import axios from "axios";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Checkbox, Form, Link } from "@heroui/react";
-import { Input } from "@/shared/ui/common/input";
+import { Form } from "@heroui/react";
+import { Button } from "@/shared/ui/common/global/btn";
+import { Input } from "@/shared/ui/common/global/input";
 import { InputPassword } from "@/shared/ui/common/input-password";
-import { useNavigate } from "react-router-dom"; // Импортируем useNavigate
+import { useNavigate } from "react-router-dom";
+import "@/shared/styles/globals.css";
 
-interface FormValues {
-  name: string;
+interface RegisterFormValues {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
-  confirmPassword: string;
-  agreeToTerms: boolean;
 }
 
 export const RegisterForm = () => {
-  const { handleSubmit, control, watch } = useForm<FormValues>({
+  const { handleSubmit, control } = useForm<RegisterFormValues>({
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      agreeToTerms: false,
     },
   });
 
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Инициализация useNavigate
+  const navigate = useNavigate();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     try {
       await axios.post(
-        "http://localhost:8000/auth/registration",
+        "http://localhost:8080/register",
         {
-          username: data.name,
+          first_name: data.firstName,
+          last_name: data.lastName,
           email: data.email,
           password: data.password,
         },
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      console.log("Пользователь успешно зарегистрирован");
       setError(null);
-
-      // Перенаправляем пользователя на страницу подтверждения
+      console.log("Пользователь успешно зарегистрирован");
       navigate("/confirm-register");
-    } catch (error: any) {
-      console.error("Ошибка при регистрации:", error.response?.data?.detail || error.message);
-
-      const errors = error.response?.data?.detail;
+    } catch (err: any) {
+      console.error("Ошибка при регистрации:", err.response?.data?.detail || err.message);
+      const errors = err.response?.data?.detail;
       if (Array.isArray(errors)) {
-        setError(errors.map((err: any) => err.msg || JSON.stringify(err)).join(", "));
+        setError(errors.map((e: any) => e.msg || JSON.stringify(e)).join(", "));
       } else {
         setError("Ошибка при регистрации.");
       }
     }
   };
 
-  const password = watch("password");
-
   return (
-    <div className="w-full flex flex-col gap-5">
-      {/* Сообщения об ошибке */}
-      {error && <p className="text-red-500 text-center">{error}</p>}
-      <Form
-        className="w-full flex flex-col gap-5"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {/* Поле для ввода имени */}
+    <Form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
+      {error && <p className="auth-form__error">{error}</p>}
+
+      <div className="auth-form__field">
+        <label htmlFor="firstName" className="auth-form__label">Имя</label>
         <Controller
           control={control}
-          name="name"
-          render={({
-            field: { name, value, onChange, onBlur },
-            fieldState: { invalid, error },
-          }) => (
+          name="firstName"
+          render={({ field, fieldState }) => (
             <Input
+              {...field}
+              id="firstName"
+              type="text"
+              placeholder="Введите имя"
               isRequired
-              errorMessage={error?.message}
-              validationBehavior="aria"
-              isInvalid={invalid}
-              label="Имя пользователя"
-              labelPlacement="outside"
-              placeholder="Введите имя пользователя"
-              name={name}
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
             />
           )}
           rules={{
             required: "Это обязательное поле",
             minLength: { value: 2, message: "Минимум 2 символа" },
-            maxLength: { value: 20, message: "Максимум 20 символов" },
           }}
         />
+      </div>
 
-        {/* Поле для ввода email */}
+      <div className="auth-form__field">
+        <label htmlFor="lastName" className="auth-form__label">Фамилия</label>
+        <Controller
+          control={control}
+          name="lastName"
+          render={({ field, fieldState }) => (
+            <Input
+              {...field}
+              id="lastName"
+              type="text"
+              placeholder="Введите фамилию"
+              isRequired
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
+            />
+          )}
+          rules={{
+            required: "Это обязательное поле",
+            minLength: { value: 2, message: "Минимум 2 символа" },
+          }}
+        />
+      </div>
+
+      <div className="auth-form__field">
+        <label htmlFor="email" className="auth-form__label">Email</label>
         <Controller
           control={control}
           name="email"
-          render={({
-            field: { value, onChange, onBlur, ref },
-            fieldState: { invalid, error },
-          }) => (
+          render={({ field, fieldState }) => (
             <Input
-              ref={ref}
+              {...field}
+              id="email"
+              type="text"
+              placeholder="Введите e-mail"
               isRequired
-              errorMessage={error?.message}
-              validationBehavior="aria"
-              isInvalid={invalid}
-              label="Email"
-              labelPlacement="outside"
-              placeholder="example@mail.com"
-              name="email"
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
             />
           )}
           rules={{
             required: "Это обязательное поле",
             pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              value: /^[\w.%+-]+@[\w.-]+\.[a-zA-Z]{2,}$/,
               message: "Введите корректный адрес электронной почты",
             },
           }}
         />
+      </div>
 
-        {/* Поле для ввода пароля */}
+      <div className="auth-form__field">
+        <label htmlFor="password" className="auth-form__label">Пароль</label>
         <Controller
           control={control}
           name="password"
-          render={({
-            field: { value, onChange, onBlur, ref },
-            fieldState: { invalid, error },
-          }) => (
+          render={({ field, fieldState }) => (
             <InputPassword
-              ref={ref}
-              isRequired
-              errorMessage={error?.message}
-              validationBehavior="aria"
-              isInvalid={invalid}
+              {...field}
+              id="password"
               type="password"
-              label="Пароль"
-              labelPlacement="outside"
               placeholder="Введите пароль"
-              name="password"
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
+              isRequired
+              isInvalid={fieldState.invalid}
+              errorMessage={fieldState.error?.message}
+              className="auth-form__input"
             />
           )}
           rules={{
@@ -161,84 +158,20 @@ export const RegisterForm = () => {
             minLength: { value: 6, message: "Минимум 6 символов" },
           }}
         />
+      </div>
 
-        {/* Подтверждение пароля */}
-        <Controller
-          control={control}
-          name="confirmPassword"
-          render={({
-            field: { value, onChange, onBlur, ref },
-            fieldState: { invalid, error },
-          }) => (
-            <InputPassword
-              ref={ref}
-              isRequired
-              errorMessage={error?.message}
-              validationBehavior="aria"
-              isInvalid={invalid}
-              type="password"
-              label="Подтверждение пароля"
-              labelPlacement="outside"
-              placeholder="Подтвердите пароль"
-              name="confirmPassword"
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
-            />
-          )}
-          rules={{
-            required: "Это обязательное поле",
-            validate: (value) => value === password || "Пароли не совпадают",
-          }}
-        />
+      <Button className="auth-form__submit" type="submit">
+        Зарегистрироваться
+      </Button>
 
-        {/* Чекбокс согласия */}
-        <div className="mt-4 flex flex-col gap-3 checkbox-container">
-          <Controller
-            control={control}
-            name="agreeToTerms"
-            render={({ field: { value, onChange }, fieldState: { invalid } }) => (
-              <Checkbox
-                isRequired
-                isInvalid={invalid}
-                isSelected={value}
-                onChange={onChange}
-                aria-label="Согласие с условиями"
-              >
-                Отправляя сведения через электронную почту вы соглашаетесь с условиями{" "}
-                <Link className="font-medium leading-none" href="/offer">
-                  оферты
-                </Link>{" "}
-                и даете согласие на обработку персональных данных на условиях{" "}
-                <Link className="font-medium leading-none" href="/privacy_policy">
-                  Политики
-                </Link>
-              </Checkbox>
-            )}
-            rules={{
-              required: "Вы должны согласиться с условиями.",
-            }}
-          />
-        </div>
-
-        {/* Кнопка отправки */}
-        <Button
-          className="w-full text-md font-medium"
-          variant="solid"
-          color="primary"
-          type="submit"
-        >
-          Начать бесплатный период
-        </Button>
-
-        {/* Ссылки на вход */}
-        <span className="w-full flex flex-row gap-1 justify-center">
-          <p>Уже есть аккаунт?</p>{" "}
-          <Link className="font-medium" href="/login">
+      <div className="auth-form__footer">
+        <p>
+          Уже есть аккаунт?{" "}
+          <a className="auth-form__link" href="/login">
             Войти
-          </Link>
-        </span>
-      </Form>
-    </div>
+          </a>
+        </p>
+      </div>
+    </Form>
   );
 };
