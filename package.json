@@ -11,6 +11,7 @@
    },
    "dependencies": {
       "@floating-ui/react": "^0.27.12",
+      "@heroui/modal": "^2.2.20",
       "@heroui/react": "^2.7.11",
       "@heroui/system": "2.4.18",
       "@heroui/table": "^2.2.21",

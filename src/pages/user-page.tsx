@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "@/shared/styles/globals.css";
 import { MainSidebar } from "@/shared/ui/common/main-sidebar";
@@ -7,7 +7,6 @@ import { DataTable } from "@/shared/ui/common/global/table";
 import { Button } from "@/shared/ui/common/global/btn";
 import UserDrawer from "@/shared/ui/common/global/drawer";
 
-// Тип данных пользователя
 type User = {
   id: number;
   fullName: string;
@@ -20,8 +19,46 @@ type User = {
 const AddUserPage: React.FC = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!loading && user) {
+      fetchUsers();
+    }
+  }, [loading, user]);
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch("http://localhost:8080/users/invited", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const rawData = await response.json();
+
+      if (!Array.isArray(rawData)) {
+        throw new Error("Некорректный формат данных");
+      }
+
+      const mapped: User[] = rawData.map((u: any) => ({
+        id: u.ID,
+        fullName: `${u.LastName} ${u.FirstName}`,
+        registrationDate: new Date().toISOString(), // или u.CreatedAt, если есть
+        role: u.Role || (u.IsOwner ? "Владелец" : "Сотрудник"),
+        status: u.EmailVerified ? "Активен" : "Ожидает подтверждения",
+        email: u.Email,
+      }));
+
+      setUsers(mapped);
+    } catch (error) {
+      console.error("Ошибка загрузки пользователей:", error);
+    }
+  };
 
   if (loading) return <div>Загрузка...</div>;
   if (!user) {
@@ -29,26 +66,7 @@ const AddUserPage: React.FC = () => {
     return null;
   }
 
-  const userData: User[] = [
-    {
-      id: 1,
-      fullName: "Иванов Иван Иванович",
-      registrationDate: "2024-11-01",
-      role: "Администратор",
-      status: "Активен",
-      email: "ivanov@example.com",
-    },
-    {
-      id: 2,
-      fullName: "Петров Петр Петрович",
-      registrationDate: "2025-01-15",
-      role: "Пользователь",
-      status: "Заблокирован",
-      email: "petrov@example.com",
-    },
-  ];
-
-  const filteredUsers = userData.filter((u) =>
+  const filteredUsers = users.filter((u) =>
     u.fullName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -108,7 +126,6 @@ const AddUserPage: React.FC = () => {
         <h1 className="page-title mb-6">Пользователи</h1>
 
         <div className="card">
-          {/* Панель управления */}
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div className="relative w-full max-w-sm">
               <input
@@ -133,7 +150,6 @@ const AddUserPage: React.FC = () => {
             </Button>
           </div>
 
-          {/* Таблица */}
           <div className="table-wrapper mt-8">
             <DataTable<User>
               columns={columns}
@@ -145,11 +161,13 @@ const AddUserPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Drawer */}
         <UserDrawer
           isOpen={isDrawerOpen}
           onOpenChange={() => setIsDrawerOpen(!isDrawerOpen)}
-          onClose={() => setIsDrawerOpen(false)}
+          onClose={() => {
+            setIsDrawerOpen(false);
+            fetchUsers(); // обновим после добавления
+          }}
         />
       </main>
     </div>

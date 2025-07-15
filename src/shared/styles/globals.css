@@ -693,6 +693,15 @@ width: 100%;
   border-radius: 6px;
 }
 
+.medium {
+  font-size: 16px;
+  padding: 16px 20px;
+  line-height: 1.3;
+  border-radius: 4px;
+  width: 160px !important;
+}
+
+
 .action-icon-btn {
   background: transparent;
   border: none;
@@ -1764,3 +1773,125 @@ table thead th {
 .modal-button-submit {
   padding: 6px 12px;
 }
+.sidebar-submenu-wrapper {
+  position: relative;
+  padding-left: 48px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Линия слева (вертикальная часть) */
+.sidebar-submenu-line {
+  position: absolute;
+  top: 0;
+  left: 28px;
+  width: 1px;
+  height: 100%;
+  background-color: #d1d5db;
+}
+
+/* Стили для каждой ссылки-подпункта */
+.sidebar-submenu-link {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14px;
+  color: #374151;
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+/* Горизонтальный отвод линии к пункту */
+.sidebar-submenu-link::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  width: 16px;
+  height: 1px;
+  background-color: #d1d5db;
+  transform: translateY(-50%);
+}
+
+.sidebar-submenu-link:hover {
+  color: #007bff;
+}
+
+.sidebar-submenu-link.active {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.user-role-matrix {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-x: auto;
+  background-color: white;
+  font-family: sans-serif;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr); /* 1 колонка "Действие", 3 — роли */
+  width: 100%;
+}
+
+.matrix-header {
+  font-weight: 600;
+  background-color: #f9fafb;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.empty-cell {
+  background-color: #f9fafb;
+}
+
+.matrix-category {
+  grid-column: 1 / -1;
+  background-color: #f3f4f6;
+  padding: 12px 16px;
+  font-weight: 600;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.caret-icon {
+  margin-right: 8px;
+  font-size: 14px;
+  user-select: none;
+}
+
+.matrix-action {
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  color: #374151;
+  text-align: left;
+}
+
+.matrix-cell {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  background-color: #ffffff;
+}
+
+.matrix-cell input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #007bff;
+}
+
+.category-cell {
+  background-color: #f3f4f6;
+}
+

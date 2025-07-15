@@ -29,6 +29,8 @@ import AddUserPage from "@/pages/user-page.tsx"; // Добавление пол�
 import CounterpartiesPage from "@/pages/counterparties";
 import { VerifyPage } from "@/pages/VerifyPage.tsx" // Контрагенты
 import SetPasswordPage from "@/pages/set-password"; // Установка пароля
+import AccessRightsPage from "@/pages/access-rights";
+
 
 
 
@@ -61,6 +63,8 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/counterparties" element={<CounterpartiesPage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/set-password" element={<SetPasswordPage />} />
+        <Route path="/access-rights" element={<AccessRightsPage />} />
+
 
 
 

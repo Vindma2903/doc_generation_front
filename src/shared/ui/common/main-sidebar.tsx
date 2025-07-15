@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { UserProfile } from "@/shared/ui/common/UserProfile";
 
 const MainSidebarComponent: React.FC = () => {
   const location = useLocation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -38,11 +39,10 @@ const MainSidebarComponent: React.FC = () => {
             to="/counterparties"
             className={`menu-link subtitle ${isActive("/counterparties") ? "active" : ""}`}
           >
-            <img src="public/partner.svg" alt="Контрагенты" className="menu-icon icon" />
+            <img src="/partner.svg" alt="Контрагенты" className="menu-icon icon" />
             Контрагенты
           </Link>
 
-          {/* 👇 Добавлено: Добавление пользователей */}
           <Link
             to="/user-page"
             className={`menu-link subtitle ${isActive("/user-page") ? "active" : ""}`}
@@ -51,8 +51,38 @@ const MainSidebarComponent: React.FC = () => {
             Пользователи
           </Link>
 
+          {/* Настройки с выпадающим списком */}
+          <div className="menu-link-group">
+            <button
+              onClick={() => setSettingsOpen(!settingsOpen)}
+              className={`menu-link subtitle flex items-center justify-between w-full ${isActive("/settings") || isActive("/access-rights") ? "active" : ""}`}
+            >
+              <div className="flex items-center gap-2">
+                <img src="/setting.svg" alt="Настройки" className="menu-icon icon" />
+                Настройки
+              </div>
+              <img
+                src={settingsOpen ? "/chevron-up.svg" : "/chevron-down.svg"}
+                alt="Раскрыть"
+                className="w-4 h-4 opacity-60"
+              />
+            </button>
+
+            {settingsOpen && (
+              <div className="sidebar-submenu-wrapper">
+                <div className="sidebar-submenu-line" />
+
+                <Link
+                  to="/access-rights"
+                  className={`sidebar-submenu-link ${isActive("/access-rights") ? "active" : ""}`}
+                >
+                  Права доступа
+                </Link>
+              </div>
+            )}
 
 
+          </div>
         </nav>
 
         <UserProfile />
@@ -61,5 +91,4 @@ const MainSidebarComponent: React.FC = () => {
   );
 };
 
-// Оборачиваем в React.memo
 export const MainSidebar = React.memo(MainSidebarComponent);

@@ -36,7 +36,13 @@ export const MailIcon = (props: any) => (
 
 const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }) => {
   const [formFields, setFormFields] = useState([
-    { email: "", firstName: "", lastName: "", middleName: "" },
+    {
+      email: "",
+      firstName: "",
+      lastName: "",
+      middleName: "",
+      role: "Сотрудник",
+    },
   ]);
 
   const [errors, setErrors] = useState<{ [key: number]: { [key: string]: string } }>({});
@@ -59,7 +65,13 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
   const handleAddMore = () => {
     setFormFields([
       ...formFields,
-      { email: "", firstName: "", lastName: "", middleName: "" },
+      {
+        email: "",
+        firstName: "",
+        lastName: "",
+        middleName: "",
+        role: "Сотрудник",
+      },
     ]);
   };
 
@@ -83,18 +95,38 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
     try {
       setLoading(true);
 
+      const token = localStorage.getItem("access_token") || "";
+      console.log("Token:", token);
+
+      if (!token) {
+        alert("Токен отсутствует, пожалуйста, войдите в систему.");
+        setLoading(false);
+        return;
+      }
+
       await Promise.all(
         formFields.map((user) =>
-          axios.post("http://localhost:8080/invite", {
-            email: user.email,
-            first_name: user.firstName,
-            last_name: user.lastName,
-          })
+          axios.post(
+            "http://localhost:8080/invite",
+            {
+              email: user.email,
+              first_name: user.firstName,
+              last_name: user.lastName,
+              role: user.role,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
         )
       );
 
       alert("Приглашения отправлены!");
-      setFormFields([{ email: "", firstName: "", lastName: "", middleName: "" }]);
+      setFormFields([
+        { email: "", firstName: "", lastName: "", middleName: "", role: "Сотрудник" },
+      ]);
       setErrors({});
       onClose();
     } catch (err: any) {
@@ -117,10 +149,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
 
         <DrawerBody className="space-y-6">
           {formFields.map((user, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-1 md:grid-cols-4 gap-4"
-            >
+            <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <Input
                 label="E-mail"
                 labelPlacement="outside"
@@ -171,8 +200,24 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 className="rounded-none"
                 classNames={{ input: "!p-0" }}
                 isInvalid={false}
-                errorMessage=" " // резерв высоты
+                errorMessage=" "
               />
+
+              <div className="flex flex-col gap-1 text-sm">
+                <label htmlFor={`role-${index}`} className="text-gray-700">
+                  Роль
+                </label>
+                <select
+                  id={`role-${index}`}
+                  value={user.role}
+                  onChange={(e) => handleChange(index, "role", e.target.value)}
+                  className="border rounded px-3 py-2 text-sm bg-white"
+                >
+                  <option value="Владелец">Владелец</option>
+                  <option value="Сотрудник">Сотрудник</option>
+                  <option value="Администратор">Администратор</option>
+                </select>
+              </div>
             </div>
           ))}
 
