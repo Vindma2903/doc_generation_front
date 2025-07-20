@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -45,8 +45,30 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
     },
   ]);
 
+  const [availableRoles, setAvailableRoles] = useState<string[]>([]);
   const [errors, setErrors] = useState<{ [key: number]: { [key: string]: string } }>({});
   const [loading, setLoading] = useState(false);
+
+  // 🔄 Получить роли при открытии
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchRoles = async () => {
+      try {
+        const token = localStorage.getItem("access_token") || "";
+        const res = await axios.get("http://localhost:8080/api/roles", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const roles: { id: number; name: string }[] = res.data;
+        setAvailableRoles(roles.map((r) => r.name));
+      } catch (err) {
+        console.error("Ошибка при получении ролей:", err);
+      }
+    };
+
+    fetchRoles();
+  }, [isOpen]);
 
   const handleChange = (index: number, field: string, value: string) => {
     const updated = [...formFields];
@@ -55,10 +77,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
 
     setErrors((prev) => ({
       ...prev,
-      [index]: {
-        ...prev[index],
-        [field]: "",
-      },
+      [index]: { ...prev[index], [field]: "" },
     }));
   };
 
@@ -70,7 +89,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
         firstName: "",
         lastName: "",
         middleName: "",
-        role: "Сотрудник",
+        role: availableRoles[0] || "Сотрудник",
       },
     ]);
   };
@@ -94,15 +113,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
 
     try {
       setLoading(true);
-
       const token = localStorage.getItem("access_token") || "";
-      console.log("Token:", token);
-
-      if (!token) {
-        alert("Токен отсутствует, пожалуйста, войдите в систему.");
-        setLoading(false);
-        return;
-      }
 
       await Promise.all(
         formFields.map((user) =>
@@ -115,9 +126,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
               role: user.role,
             },
             {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              headers: { Authorization: `Bearer ${token}` },
             }
           )
         )
@@ -143,9 +152,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
   return (
     <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
       <DrawerContent className="max-w-6xl w-full mx-auto">
-        <DrawerHeader className="text-lg font-semibold">
-          Добавление пользователей
-        </DrawerHeader>
+        <DrawerHeader className="text-lg font-semibold">Добавление пользователей</DrawerHeader>
 
         <DrawerBody className="space-y-6">
           {formFields.map((user, index) => (
@@ -163,7 +170,6 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 isInvalid={!!errors[index]?.email}
                 errorMessage={errors[index]?.email}
               />
-
               <Input
                 label="Фамилия"
                 labelPlacement="outside"
@@ -176,7 +182,6 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 isInvalid={!!errors[index]?.lastName}
                 errorMessage={errors[index]?.lastName}
               />
-
               <Input
                 label="Имя"
                 labelPlacement="outside"
@@ -189,7 +194,6 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 isInvalid={!!errors[index]?.firstName}
                 errorMessage={errors[index]?.firstName}
               />
-
               <Input
                 label="Отчество"
                 labelPlacement="outside"
@@ -199,23 +203,18 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
                 variant="bordered"
                 className="rounded-none"
                 classNames={{ input: "!p-0" }}
-                isInvalid={false}
-                errorMessage=" "
               />
-
               <div className="flex flex-col gap-1 text-sm">
-                <label htmlFor={`role-${index}`} className="text-gray-700">
-                  Роль
-                </label>
+                <label htmlFor={`role-${index}`} className="text-gray-700">Роль</label>
                 <select
                   id={`role-${index}`}
                   value={user.role}
                   onChange={(e) => handleChange(index, "role", e.target.value)}
                   className="border rounded px-3 py-2 text-sm bg-white"
                 >
-                  <option value="Владелец">Владелец</option>
-                  <option value="Сотрудник">Сотрудник</option>
-                  <option value="Администратор">Администратор</option>
+                  {availableRoles.map((role) => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -233,14 +232,9 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ isOpen, onOpenChange, onClose }
         </DrawerBody>
 
         <DrawerFooter className="flex justify-end gap-4">
-          <Button
-            onPress={onClose}
-            className="cancel-btn w-full sm:w-[160px]"
-            variant="flat"
-          >
+          <Button onPress={onClose} className="cancel-btn w-full sm:w-[160px]" variant="flat">
             Отменить
           </Button>
-
           <Button
             color="primary"
             onPress={handleSubmit}

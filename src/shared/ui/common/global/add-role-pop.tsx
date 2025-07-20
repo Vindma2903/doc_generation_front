@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "@/shared/styles/globals.css";
-import { useAuth } from "@/features/auth/AuthContext";
+
 
 import {
   Modal,
@@ -33,7 +33,7 @@ export const AddRolePopup: React.FC<AddRolePopupProps> = ({
   const [roleName, setRoleName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const { user } = useAuth(); // подключено, если потребуется
+
 
   useEffect(() => {
     if (isOpen) {
@@ -75,16 +75,18 @@ export const AddRolePopup: React.FC<AddRolePopupProps> = ({
   };
 
   const handleSave = async () => {
-    if (!roleName.trim() || selectedUsers.length === 0) return;
+    const trimmedRole = roleName.trim();
+    if (!trimmedRole) return;
 
     try {
       const token = localStorage.getItem("access_token");
 
+      // Отправляем даже если selectedUsers пуст
       await axios.post(
         "http://localhost:8080/users/assign-role",
         {
-          user_ids: selectedUsers,
-          role: roleName.trim(),
+          user_ids: selectedUsers, // пустой массив — не проблема
+          role: trimmedRole,
         },
         {
           headers: {
@@ -93,16 +95,19 @@ export const AddRolePopup: React.FC<AddRolePopupProps> = ({
         }
       );
 
-      console.log("Роли успешно обновлены");
-      onSave(roleName.trim(), selectedUsers); // если нужен callback
+      console.log("Роль успешно добавлена/обновлена");
+
+      // обновим UI
+      onSave(trimmedRole, selectedUsers);
       setRoleName("");
       setSelectedUsers([]);
       onClose();
     } catch (err) {
       console.error("Ошибка при назначении роли:", err);
-      alert("Не удалось назначить роль. Проверьте права доступа.");
+      alert("Не удалось сохранить роль. Проверьте права доступа.");
     }
   };
+
 
 
   return (
@@ -146,7 +151,7 @@ export const AddRolePopup: React.FC<AddRolePopupProps> = ({
             />
 
             <p className="text-sm font-medium mb-2">Сотрудники</p>
-            <div className="max-h-[260px] overflow-y-auto border rounded p-2 space-y-2">
+            <div className="max-h-[300px] overflow-y-auto border rounded p-2 space-y-2">
               {employees.map(({ id, firstName, lastName, role }) => {
                 const isSelected = selectedUsers.includes(id);
                 const fullName = `${firstName} ${lastName}`;
@@ -196,7 +201,7 @@ export const AddRolePopup: React.FC<AddRolePopupProps> = ({
               Отмена
             </Button>
             <Button className="bg-primary small w-[120px]" onClick={handleSave}>
-              Назначить роль
+              Сохранить
             </Button>
           </ModalFooter>
         </>
